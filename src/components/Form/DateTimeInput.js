@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
+    width: 200,
   },
 }));
 
@@ -21,7 +22,8 @@ export default function DateTimeInput(props) {
       <TextField
         id="outlined-basic"
         label="Arrived at"
-        type="date"
+        type="datetime"
+        defaultValue="2017-05-24"
         className={classes.textField}
         InputLabelProps={{
           shrink: true,

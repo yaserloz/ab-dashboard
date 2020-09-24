@@ -13,7 +13,8 @@ const slice = createSlice({
         purchaseOrderAddFinished:null,
         lastFetch: null,
         completingPurchaseOrder:false,
-        lastInsertedOrderId:null
+        lastInsertedOrderId:null,
+        purchaseOrderToModifie :null
     },
     reducers: {
         purchaseOrdersReceived:(purchaseOrders, action) =>{
@@ -27,6 +28,20 @@ const slice = createSlice({
         purchaseOrdersRequestedFailed: ( purchaseOrders, action) => {
             purchaseOrders.loading = false;
         },
+
+
+        onePurchaseOrdersReceived:(purchaseOrders, action) =>{
+            purchaseOrders.purchaseOrderToModifie = action.payload;
+            purchaseOrders.loading = false;
+            purchaseOrders.lastFetch = Date.now();
+        },
+        onePurchaseOrderRequested: (purchaseOrders, action) => {
+            purchaseOrders.loading = true;
+        },
+        onePurchaseOrdersRequestedFailed: ( purchaseOrders, action) => {
+            purchaseOrders.loading = false;
+        },
+
 
         completePurchaseOrderProcessStarted: ( purchaseOrders, action) => {
             purchaseOrders.completingPurchaseOrder = true;
@@ -69,6 +84,18 @@ export const loadPurchaseOrders = () => (dispatch, getState) => {
     }))
 }
 
+export const getPurchaseOrder = (id) => (dispatch, getState) => {
+
+    const {lastFetch} = getState();
+
+    dispatch(actions.apiCallBegan({
+      url:'/purchase-order/'+id,
+      onStart:onePurchaseOrderRequested.type,
+      onError:onePurchaseOrdersRequestedFailed.type,
+      onSuccess:onePurchaseOrdersReceived.type,
+    }))
+}
+
 export const addPurchaseOrder = (data) => (dispatch, getState) => {
     dispatch(actions.apiCallBegan({
         url:'/purchase-order-add',
@@ -90,21 +117,27 @@ export const getPurchaseOrders = createSelector(
 )
 
 
+export const getOnePurchaseOrder= createSelector(
+    state => state.PurchaseOrders,
+    PurchaseOrders => PurchaseOrders.purchaseOrderToModifie
+)
+
+
 
 
 export const {
+    onePurchaseOrderRequested,
+    onePurchaseOrdersRequestedFailed,
+    onePurchaseOrdersReceived,
     purchaseOrdersReceived,
     purchaseOrdersRequested,
     purchaseOrdersRequestedFailed,
-
     completePurchaseOrderProcessStarted,
-
     purchaseOrderAddRequested,
     purchaseOrderAddFailed,
     purchaseOrderAddFinished,
     purchaseOrderAddSuccess
-
-  } = slice.actions;
+} = slice.actions;
   
 export default slice.reducer;
   

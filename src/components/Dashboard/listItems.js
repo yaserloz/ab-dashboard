@@ -31,7 +31,7 @@ export const MainListItems = (props) =>{
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Selling orders" />
+            <ListItemText onClick={() => props.onLinkClick('/selling-order')} primary="Selling orders" primary="Selling orders" />
           </ListItem>
           <ListItem button>
             <ListItemIcon>

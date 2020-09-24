@@ -1,9 +1,7 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { red } from '@material-ui/core/colors';
-import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import CheckIcon from '@material-ui/icons/Check';
 import ReplayIcon from '@material-ui/icons/Replay';
@@ -55,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CircularIntegration() {
   const classes = useStyles();
-  const timer = React.useRef();
 
   const dispatch = useDispatch();
   const state = useSelector(state => state);
