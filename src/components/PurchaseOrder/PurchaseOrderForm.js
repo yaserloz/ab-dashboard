@@ -30,7 +30,7 @@ import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 const useStyles = makeStyles((theme) => ({
   poContainer: {
     display: "flex",
-    height: "100%", 
+    height: "100%",
   },
   poCreationDate: {
     height: "100%",
@@ -82,10 +82,8 @@ const PurchaseOrderForm = (props) => {
   const [checkedLines, setCheckedLines] = React.useState([]);
   const [purchaseOrder, setPurchaseOrder] = React.useState(null);
 
-  
   useEffect(() => {
     (async () => {
-      
       let response = await fetch("https://api.yaz-fr.com/api/suppliers");
       const suppliers = await response.json();
       setSuppliers(suppliers);
@@ -94,7 +92,9 @@ const PurchaseOrderForm = (props) => {
       const deliverytypes = await response.json();
       setDeliveryTypes(deliverytypes);
 
-      response = await fetch(" https://api.yaz-fr.com/api/purchase-order/"+props.match.params.id);
+      response = await fetch(
+        " https://api.yaz-fr.com/api/purchase-order/" + props.match.params.id
+      );
       const purchaseOrder = await response.json();
       setPurchaseOrder(purchaseOrder);
     })();
@@ -104,77 +104,85 @@ const PurchaseOrderForm = (props) => {
     setOpen(true);
   };
 
-  // const codeBarChangeHandler = async (event, lineIndex) => {
-  //     const productCodeBar = event.target.value;
-  //     if(!productCodeBar)
-  //       return;
-  //     const product = await fetchProductByItsCodeBar(productCodeBar);
-  //     const codeBar = product.data[0].code_bar;
-  //     const id = product.data[0].id;
-  //     dispatch(
-  //       modifeOrderline({ product_id: id, code_bar: codeBar }, lineIndex)
-  //     );
-  // };
-
-  const codeBarChangeHandler =  lineIndex => event => {
+  const searchCodeBarHandler = (lineIndex) => async (event) => {
     const productCodeBar = event.target.value;
-    const purchaseOrderCopy = {...purchaseOrder};
+    if (!productCodeBar) return;
+    const product = await fetchProductByItsCodeBar(productCodeBar);
+    const codeBar = product.data[0].code_bar;
+    const id = product.data[0].id;
 
-    purchaseOrderCopy.orderLines[lineIndex] = {...purchaseOrderCopy.orderLines[lineIndex], code_bar:productCodeBar}
-    setPurchaseOrder(purchaseOrderCopy)
+    const purchaseOrderCopy = { ...purchaseOrder };
 
-    // if(!productCodeBar)
-    //   return;
-    // const product = await fetchProductByItsCodeBar(productCodeBar);
-    // const codeBar = product.data[0].code_bar;
-    // const id = product.data[0].id;
-    // dispatch(
-    //   modifeOrderline({ product_id: id, code_bar: codeBar }, lineIndex)
-    // );
-};
-
-  const productCountChangeHandler = (event, lineIndex) => {
-    if (event.key === "Enter") {
-      const productCount = event.target.value;
-      dispatch(modifeOrderline({ product_count: productCount }, lineIndex));
-      if (purchaseOrder.orderLines[lineIndex].unit_price) {
-        dispatch(
-          modifeOrderline(
-            {
-              total_price:
-                purchaseOrder.orderLines[lineIndex].unit_price * productCount,
-            },
-            lineIndex
-          )
-        );
-      }
-    }
+    purchaseOrderCopy.orderLines[lineIndex] = {
+      ...purchaseOrderCopy.orderLines[lineIndex],
+      code_bar: codeBar,
+      product_id: id,
+    };
+    setPurchaseOrder(purchaseOrderCopy);
   };
 
-  const productPriceChangeHandler = (event, lineIndex) => {
-    if (event.key === "Enter") {
-      const productPrice = event.target.value;
-      dispatch(modifeOrderline({ unit_price: productPrice }, lineIndex));
-      if (purchaseOrder.orderLines[lineIndex].product_count) {
-        dispatch(
-          modifeOrderline(
-            {
-              total_price:
-                purchaseOrder.orderLines[lineIndex].product_count *
-                productPrice,
-            },
-            lineIndex
-          )
-        );
-      }
-    }
+  const codeBarChangeHandler = (lineIndex) => (event) => {
+    const productCodeBar = event.target.value;
+    const purchaseOrderCopy = { ...purchaseOrder };
+
+    purchaseOrderCopy.orderLines[lineIndex] = {
+      ...purchaseOrderCopy.orderLines[lineIndex],
+      code_bar: productCodeBar,
+    };
+    setPurchaseOrder(purchaseOrderCopy);
+  };
+
+  const productCountChangeHandler = (lineIndex) => (event) => {
+    const productCount = event.target.value;
+    const purchaseOrderCopy = { ...purchaseOrder };
+
+    purchaseOrderCopy.orderLines[lineIndex] = {
+      ...purchaseOrderCopy.orderLines[lineIndex],
+      product_count: productCount,
+    };
+    setPurchaseOrder(purchaseOrderCopy);
+  };
+
+  const calculateLineTotalPrice = (lineIndex) => (event) => {
+    const purchaseOrderCopy = { ...purchaseOrder };
+
+    const totalPrice =
+      purchaseOrderCopy.orderLines[lineIndex].product_count *
+      purchaseOrderCopy.orderLines[lineIndex].unit_price;
+    purchaseOrderCopy.orderLines[lineIndex] = {
+      ...purchaseOrderCopy.orderLines[lineIndex],
+      total_price: totalPrice,
+    };
+    setPurchaseOrder(purchaseOrderCopy);
+  };
+
+  const productPriceChangeHandler = (lineIndex) => (event) => {
+    const productPrice = event.target.value;
+    const purchaseOrderCopy = { ...purchaseOrder };
+
+    purchaseOrderCopy.orderLines[lineIndex] = {
+      ...purchaseOrderCopy.orderLines[lineIndex],
+      unit_price: productPrice,
+    };
+    setPurchaseOrder(purchaseOrderCopy);
   };
 
   const fetchProductByItsCodeBar = async (codeBar) =>
     await axios.get(`https://api.yaz-fr.com/api/product/${codeBar}`);
 
   const addEmptyOrderLine = () => {
-    dispatch(addNewOrderLine());
+    const purchaseOrderCopy = { ...purchaseOrder };
+
+    purchaseOrderCopy.orderLines = [
+      {
+        unit_price: " ",
+        code_bar: " ",
+        product_id: " ",
+        product_count: " ",
+        total_price: " ",
+      },
+    ].concat(purchaseOrderCopy.orderLines);
+    setPurchaseOrder(purchaseOrderCopy);
   };
 
   const handleClose = (action) => {
@@ -184,26 +192,43 @@ const PurchaseOrderForm = (props) => {
     setOpen(false);
   };
 
-  const onLineCheck = (e, line) => {
+  const onLineCheck = (index) => (e) => {
+    const purchaseOrderCopy = { ...purchaseOrder };
+
     if (e.target.checked) {
-      setCheckedLines([...checkedLines, line]);
+      purchaseOrderCopy.orderLines[index].checked = true;
+      setPurchaseOrder(purchaseOrderCopy);
       return;
     }
+    purchaseOrderCopy.orderLines[index].checked = false;
+    setPurchaseOrder(purchaseOrderCopy);
+  };
 
-    setCheckedLines(
-      checkedLines.filter((checkedLine, index) => index !== line.index)
-    );
+  const clearLineInput = index => {
+    const purchaseOrderCopy = { ...purchaseOrder };
+
+    purchaseOrderCopy.orderLines[index] = {
+      unit_price: " ",
+      code_bar: " ",
+      product_id: " ",
+      product_count: " ",
+      total_price: " ",
+    };
+    setPurchaseOrder(purchaseOrderCopy);
   };
 
   const cleanLinesHandler = (popupstate) => {
-    popupstate.close()
-    checkedLines.forEach((line) => {
-      dispatch(modifeOrderline(null, line.index));
+    const purchaseOrderCopy = { ...purchaseOrder };
+    popupstate.close();
+    purchaseOrderCopy.orderLines.forEach((line, index) => {
+      if (line.checked) {
+        clearLineInput(index);
+      }
     });
-
-  }
+  };
 
   const classes = useStyles();
+
   const speedDialStyle = speedDialuseStyles();
 
   if (purchaseOrder && !purchaseOrder.orderInfo.length) {
@@ -211,8 +236,6 @@ const PurchaseOrderForm = (props) => {
       <h3>Error could not fetch orderInfo {`${props.match.params.id}`}</h3>
     );
   }
-  console.log('render')
-
   return (
     <div>
       <h3>Purchase order {`${props.match.params.id}`}</h3>
@@ -253,7 +276,7 @@ const PurchaseOrderForm = (props) => {
                 : false
             }
             label={"Supplier"}
-            options={ 
+            options={
               deliveryTypes && deliveryTypes.length ? deliveryTypes : null
             }
             selectedOptions={
@@ -376,10 +399,14 @@ const PurchaseOrderForm = (props) => {
               {...bindTrigger(popupState)}
             >
               Actions{" "}
-              {checkedLines && checkedLines.length ? checkedLines.length : null}
+              {purchaseOrder && purchaseOrder.orderLines.length
+                ? purchaseOrder.orderLines.filter((line) => line.checked).length
+                : null}
             </Button>
             <Menu {...bindMenu(popupState)}>
-              <MenuItem onClick={e => cleanLinesHandler(popupState)}>Clear Lines</MenuItem>
+              <MenuItem onClick={(e) => cleanLinesHandler(popupState)}>
+                Clear Lines
+              </MenuItem>
               <MenuItem onClick={popupState.close}>Delete lines</MenuItem>
             </Menu>
           </React.Fragment>
@@ -392,9 +419,10 @@ const PurchaseOrderForm = (props) => {
               <Grid container spacing={3} key={index}>
                 <Grid item>
                   <Checkbox
+                    checked={line.checked ? true : false}
                     color="primary"
                     inputProps={{ "aria-label": "secondary checkbox" }}
-                    onChange={(e) => onLineCheck(e, { line, index })}
+                    onChange={onLineCheck(index)}
                   />
                 </Grid>
                 <Grid item>
@@ -407,7 +435,7 @@ const PurchaseOrderForm = (props) => {
                     value={line.code_bar}
                     fullWidth
                     label="Code bar"
-                    // onBlur={codeBarChangeHandler(index)}
+                    onBlur={searchCodeBarHandler(index)}
                     onChange={codeBarChangeHandler(index)}
                   />
                 </Grid>
@@ -433,10 +461,11 @@ const PurchaseOrderForm = (props) => {
                         ? "disabled"
                         : null
                     }
-                    value={line.product_count || " "}
+                    value={line.product_count}
                     fullWidth
                     label="Product count"
-                    onKeyPress={(e) => productCountChangeHandler(e, index)}
+                    onBlur={calculateLineTotalPrice(index)}
+                    onChange={productCountChangeHandler(index)}
                   />
                 </Grid>
 
@@ -450,7 +479,8 @@ const PurchaseOrderForm = (props) => {
                     value={line.unit_price || " "}
                     fullWidth
                     label="Price unite"
-                    onKeyPress={(e) => productPriceChangeHandler(e, index)}
+                    onBlur={calculateLineTotalPrice(index)}
+                    onChange={productPriceChangeHandler(index)}
                   />
                 </Grid>
 
