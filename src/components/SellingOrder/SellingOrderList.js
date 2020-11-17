@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom'
 const orderStateTranslate = {
   NEW:"طلب جديد",
   PAIED:"تم الدفع للموزع",
+  PAID_TO_DISTRIBUTE:"تم الدفع للموزع",
 }
 
 
@@ -53,7 +54,7 @@ const SellingOrderList = (props) => {
 
   useEffect(() => {
     dispatch(loadSellingOrders());
-  }, []);
+  }, [dispatch]);
   const classes = useStyles();
   console.log(SellingOrders);
   let total = 0

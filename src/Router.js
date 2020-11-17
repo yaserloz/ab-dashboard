@@ -27,7 +27,7 @@ const Router = props => {
             <Switch>
                 <Route path="/" exact  render={(props) => <Dashboard {...props} page={DashboardIndex} />} />
                 <Provider store={store}>
-                    <Route path="/purchase-order" exact render={(props) => <Dashboard {...props} page={PurchaseOrder} />} />
+                    <Route path="/purchase-order" exact component={PurchaseOrder}   />
                     <Route path="/selling-order" exact render={(props) => <Dashboard {...props} page={SellingOrder} />} />
                     <Route path="/selling-order/:id" exact component={OrderToPdf} />
                     <Route path="/purchase-order/:id" exact component={PurchaseOrderForm} />

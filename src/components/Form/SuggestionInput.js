@@ -22,7 +22,7 @@ function SuggestionInput({selectedOptions , options, label, disabled}) {
     <div>
 
       <Autocomplete
-        disabled
+        disabled={disabled ? true:false}
         
         fullWidth 
       

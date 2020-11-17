@@ -45,7 +45,7 @@ export default function SelectList(props) {
         >
           <option aria-label="None" value="" />
             {
-                props.options.length ? props.options.map( option => <option value={option.value}>{option.label}</option> ) : null
+                props.options.length ? props.options.map( (option, index) => <option key={index} value={option.value}>{option.label}</option> ) : null
             }
          
         </Select>

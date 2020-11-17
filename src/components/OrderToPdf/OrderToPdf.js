@@ -206,7 +206,7 @@ const OrderToPdf = (props) => {
                 ? orderLinesPageOne.map((line) => {
                     return (
                       <p>
-                        {line.code_bar ? line.code_bar  : " "}
+                        {line.code_bar ? line.code_bar  : "0000000000000"}
 
                       </p>
                     );

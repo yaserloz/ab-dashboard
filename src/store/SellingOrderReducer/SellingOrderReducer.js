@@ -59,7 +59,6 @@ const slice = createSlice({
 
 export const loadSellingOrders = () => (dispatch, getState) => { 
 
-    const {lastFetch} = getState();
 
     dispatch(actions.apiCallBegan({
       url:'/selling-orders',
