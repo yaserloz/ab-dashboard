@@ -1,24 +1,9 @@
 import React, { useEffect } from "react";
-import {
-  getOnePurchaseOrder,
-  getPurchaseOrder,
-  addNewOrderLine,
-  modifeOrderline,
-} from "../../store/PurchaseOrderReducer/PurchaseOrderReducer";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
 import Grid from "@material-ui/core/Grid";
 import SuggestionInput from "../Form/SuggestionInput";
 import SelectList from "../Form/SelectList";
-import fetch from "cross-fetch";
-import Add from "@material-ui/icons/Add";
-import SpeedDial from "@material-ui/lab/SpeedDial";
-import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
-import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
-import SaveIcon from "@material-ui/icons/Save";
-import PrintIcon from "@material-ui/icons/Print";
-import ShareIcon from "@material-ui/icons/Share";
-import FavoriteIcon from "@material-ui/icons/Favorite";
+
 import axios from "axios";
 import Checkbox from "@material-ui/core/Checkbox";
 import TextInput from "../Form/TextInput";
@@ -26,6 +11,7 @@ import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import env from "../../env";
 
 const useStyles = makeStyles((theme) => ({
   poContainer: {
@@ -65,17 +51,9 @@ const speedDialuseStyles = makeStyles((theme) => ({
   },
 }));
 
-const actions = [
-  { icon: <Add />, name: "Add order line", operation: "addOrderLine" },
-  { icon: <SaveIcon />, name: "Save order" },
-  { icon: <PrintIcon />, name: "Print" },
-  { icon: <ShareIcon />, name: "Share" },
-  { icon: <FavoriteIcon />, name: "Like" },
-];
-
 const PurchaseOrderForm = (props) => {
-  const dispatch = useDispatch();
-  // const purchaseOrder = useSelector(getOnePurchaseOrder);
+
+
   const [suppliers, setSuppliers] = React.useState([]);
   const [deliveryTypes, setDeliveryTypes] = React.useState([]);
   const [open, setOpen] = React.useState(false);
@@ -83,29 +61,62 @@ const PurchaseOrderForm = (props) => {
   const [purchaseOrder, setPurchaseOrder] = React.useState(null);
 
   useEffect(() => {
-    (async () => {
-      let response = await fetch("https://api.yaz-fr.com/api/suppliers");
-      const suppliers = await response.json();
+    axios.get(env() + "suppliers").then((response) => {
+      const suppliers = response.data;
       setSuppliers(suppliers);
+    });
 
-      response = await fetch("https://api.yaz-fr.com/api/delivery-type");
-      const deliverytypes = await response.json();
+    axios.get(env() + "delivery-type").then((response) => {
+      const deliverytypes = response.data;
       setDeliveryTypes(deliverytypes);
+    });
 
-      response = await fetch(
-        " https://api.yaz-fr.com/api/purchase-order/" + props.match.params.id
-      );
-      const purchaseOrder = await response.json();
-      setPurchaseOrder(purchaseOrder);
-    })();
-  }, [dispatch, props.match.params.id]);
+    axios.get(env() + "purchase-order/" + props.po).then((response) => {
+      setPurchaseOrder(response.data);
+    });
+  }, [props.po]);
+
+  const onSuppliersChangeHandler = (supplier) => {
+    const purchaseOrderCopy = { ...purchaseOrder };
+    purchaseOrderCopy.orderInfo[0].supplier = supplier.id;
+    purchaseOrderCopy.orderInfo[0].company_name = supplier.name;
+    setPurchaseOrder(purchaseOrderCopy);
+  };
+
+  const onDeliveryTypesHandler = (deliveryType) => {
+    console.log(deliveryType);
+    const purchaseOrderCopy = { ...purchaseOrder };
+    purchaseOrderCopy.orderInfo[0].delivery_type_id = deliveryType.id;
+    purchaseOrderCopy.orderInfo[0].name = deliveryType.name;
+    setPurchaseOrder(purchaseOrderCopy);
+  };
+
+  const onCurrencyChangeHandler = (currency) => {
+    const purchaseOrderCopy = { ...purchaseOrder };
+    purchaseOrderCopy.orderInfo[0].currency_id = currency.value;
+    purchaseOrderCopy.orderInfo[0].title = currency.name;
+    setPurchaseOrder(purchaseOrderCopy);
+  };
 
   const handleOpen = () => {
     setOpen(true);
   };
 
+  const saveOrder = () => {
+    const purchaseOrderCopy = { ...purchaseOrder };
+
+    axios.post(
+      env() + "purchase-order/save/" + purchaseOrderCopy.orderInfo[0].id,
+      {
+        purchaseOrder: purchaseOrderCopy.orderInfo[0],
+        ac: "ThisIsHowIKnowYasir@ab",
+      }
+    );
+  };
+
   const searchCodeBarHandler = (lineIndex) => async (event) => {
-    const productCodeBar = event.target.value;
+    
+    const productCodeBar = event.target.value.trim();
     if (!productCodeBar) return;
     const product = await fetchProductByItsCodeBar(productCodeBar);
     const codeBar = product.data[0].code_bar;
@@ -124,11 +135,11 @@ const PurchaseOrderForm = (props) => {
   const codeBarChangeHandler = (lineIndex) => (event) => {
     const productCodeBar = event.target.value;
     const purchaseOrderCopy = { ...purchaseOrder };
-
     purchaseOrderCopy.orderLines[lineIndex] = {
       ...purchaseOrderCopy.orderLines[lineIndex],
       code_bar: productCodeBar,
     };
+
     setPurchaseOrder(purchaseOrderCopy);
   };
 
@@ -145,21 +156,21 @@ const PurchaseOrderForm = (props) => {
 
   const calculateLineTotalPrice = (lineIndex) => (event) => {
     const purchaseOrderCopy = { ...purchaseOrder };
-
     const totalPrice =
       purchaseOrderCopy.orderLines[lineIndex].product_count *
       purchaseOrderCopy.orderLines[lineIndex].unit_price;
     purchaseOrderCopy.orderLines[lineIndex] = {
       ...purchaseOrderCopy.orderLines[lineIndex],
       total_price: totalPrice,
-    };
+    }
+
+
     setPurchaseOrder(purchaseOrderCopy);
   };
 
   const productPriceChangeHandler = (lineIndex) => (event) => {
     const productPrice = event.target.value;
     const purchaseOrderCopy = { ...purchaseOrder };
-
     purchaseOrderCopy.orderLines[lineIndex] = {
       ...purchaseOrderCopy.orderLines[lineIndex],
       unit_price: productPrice,
@@ -168,18 +179,20 @@ const PurchaseOrderForm = (props) => {
   };
 
   const fetchProductByItsCodeBar = async (codeBar) =>
-    await axios.get(`https://api.yaz-fr.com/api/product/${codeBar}`);
+    await axios.get(`${env()}product/${codeBar}`);
 
   const addEmptyOrderLine = () => {
     const purchaseOrderCopy = { ...purchaseOrder };
 
     purchaseOrderCopy.orderLines = [
       {
+        toAdd: true,
         unit_price: " ",
         code_bar: " ",
         product_id: " ",
         product_count: " ",
         total_price: " ",
+        notSaved: "",
       },
     ].concat(purchaseOrderCopy.orderLines);
     setPurchaseOrder(purchaseOrderCopy);
@@ -189,7 +202,29 @@ const PurchaseOrderForm = (props) => {
     if (action.operation === "addOrderLine") {
       addEmptyOrderLine();
     }
+
+    if (action.operation === "saveOrder") {
+      saveOrder();
+    }
     setOpen(false);
+  };
+
+  const presisteLine = async (index, event) => {
+    const purchaseOrderCopy = { ...purchaseOrder };
+    const lineToPresiste = purchaseOrderCopy.orderLines[index];
+    const response = await axios.post(
+      env() + "purchase-order/" + props.po + "/lines/add",
+      {
+        ac: "ThisIsHowIKnowYasir@ab",
+        productStockLine: lineToPresiste,
+      }
+    );
+    if (!response.data.error) {
+      // fetchPurchaseOrder()
+      return;
+    }
+
+    alert("Error saving data");
   };
 
   const onLineCheck = (index) => (e) => {
@@ -204,7 +239,7 @@ const PurchaseOrderForm = (props) => {
     setPurchaseOrder(purchaseOrderCopy);
   };
 
-  const clearLineInput = index => {
+  const clearLineInput = (index) => {
     const purchaseOrderCopy = { ...purchaseOrder };
 
     purchaseOrderCopy.orderLines[index] = {
@@ -232,13 +267,12 @@ const PurchaseOrderForm = (props) => {
   const speedDialStyle = speedDialuseStyles();
 
   if (purchaseOrder && !purchaseOrder.orderInfo.length) {
-    return (
-      <h3>Error could not fetch orderInfo {`${props.match.params.id}`}</h3>
-    );
+    return <h3>Error could not fetch orderInfo {`${props.po}`}</h3>;
   }
+
   return (
     <div>
-      <h3>Purchase order {`${props.match.params.id}`}</h3>
+      <h3>Purchase order {`${props.po}`}</h3>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <SuggestionInput
@@ -251,6 +285,7 @@ const PurchaseOrderForm = (props) => {
             }
             label={"Supplier"}
             label="Supplier"
+            onOptionChange={onSuppliersChangeHandler}
             options={suppliers && suppliers.length ? suppliers : null}
             selectedOptions={
               purchaseOrder &&
@@ -279,6 +314,7 @@ const PurchaseOrderForm = (props) => {
             options={
               deliveryTypes && deliveryTypes.length ? deliveryTypes : null
             }
+            onOptionChange={onDeliveryTypesHandler}
             selectedOptions={
               purchaseOrder &&
               purchaseOrder.orderInfo &&
@@ -305,10 +341,16 @@ const PurchaseOrderForm = (props) => {
             fullWidth
             label="Currency"
             options={[
-              { name: "Euro", value: 1 },
+              { name: "EURO", value: 1 },
               { name: "Dinar", value: 2 },
             ]}
-            selectedOptions={{ name: "Euro", value: 1 }}
+            onOptionChange={onCurrencyChangeHandler}
+            selectedOptions={{
+              name: purchaseOrder ? purchaseOrder.orderInfo[0].title : null,
+              value: purchaseOrder
+                ? purchaseOrder.orderInfo[0].currency_id
+                : null,
+            }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -321,14 +363,16 @@ const PurchaseOrderForm = (props) => {
                 : false
             }
             fullWidth
-            value="Arrived ?"
+            label="Arrived"
+            // selectedOption = { purchaseOrder && parseInt(purchaseOrder.orderInfo[0].arrived)}
+            // value="Arrived ?"
             options={[
               {
-                label: "Yes",
+                name: "Yes",
                 value: 1,
               },
               {
-                label: "No",
+                name: "No",
                 value: 0,
               },
             ]}
@@ -369,42 +413,12 @@ const PurchaseOrderForm = (props) => {
           : 0}
       </div>
       <br />
-      <div className={speedDialStyle.root}>
-        <SpeedDial
-          ariaLabel="SpeedDial tooltip example"
-          className={classes.speedDial}
-          icon={<SpeedDialIcon />}
-          onClose={handleClose}
-          onOpen={handleOpen}
-          open={open}
-          direction={"right"}
-        >
-          {actions.map((action) => (
-            <SpeedDialAction
-              key={action.name}
-              icon={action.icon}
-              tooltipTitle={action.name}
-              onClick={(event) => handleClose(action)}
-            />
-          ))}
-        </SpeedDial>
-      </div>
       <br /> <br />
       <PopupState variant="popover" popupId="demo-popup-menu">
         {(popupState) => (
           <React.Fragment>
-            <Button
-              variant="contained"
-              color="primary"
-              {...bindTrigger(popupState)}
-            >
-              Actions{" "}
-              {purchaseOrder && purchaseOrder.orderLines.length
-                ? purchaseOrder.orderLines.filter((line) => line.checked).length
-                : null}
-            </Button>
             <Menu {...bindMenu(popupState)}>
-              <MenuItem onClick={(e) => cleanLinesHandler(popupState)}>
+              <MenuItem   onClick={(e) => cleanLinesHandler(popupState)}>
                 Clear Lines
               </MenuItem>
               <MenuItem onClick={popupState.close}>Delete lines</MenuItem>
@@ -412,19 +426,18 @@ const PurchaseOrderForm = (props) => {
           </React.Fragment>
         )}
       </PopupState>
-      <br /> <br />
+      <Button style={{marginRight:'1em', marginLeft:'1em'}} onClick={saveOrder} variant="contained" color="primary">
+        Save order info
+      </Button>
+      <Button onClick={addEmptyOrderLine} variant="contained" color="primary">
+        Add line
+      </Button>
+      <br /> <br /><br /> <br />
       {purchaseOrder
         ? purchaseOrder.orderLines.map((line, index) => {
             return (
               <Grid container spacing={3} key={index}>
-                <Grid item>
-                  <Checkbox
-                    checked={line.checked ? true : false}
-                    color="primary"
-                    inputProps={{ "aria-label": "secondary checkbox" }}
-                    onChange={onLineCheck(index)}
-                  />
-                </Grid>
+                <Grid item></Grid>
                 <Grid item>
                   <TextInput
                     disabled={
@@ -497,6 +510,17 @@ const PurchaseOrderForm = (props) => {
                     InputLabelProps={{ shrink: true }}
                     disabled={true}
                   />
+                </Grid>
+                <Grid item>
+                  {line.toAdd ? (
+                    <Button
+                      onClick={(e) => presisteLine(index, e)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Save
+                    </Button>
+                  ) : null}
                 </Grid>
               </Grid>
             );

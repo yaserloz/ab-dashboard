@@ -12,7 +12,8 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { Link } from 'react-router-dom'
-
+import axios from 'axios'
+import env from '../../env'
 
 const orderStateTranslate = {
   NEW:"طلب جديد",
@@ -49,12 +50,15 @@ const useStyles = makeStyles((theme) => ({
 
 const SellingOrderList = (props) => {
 
-  const dispatch = useDispatch();
-  const SellingOrders = useSelector(getSellingOrders);
+
+  const [SellingOrders, setSellingOrders] = React.useState([])
 
   useEffect(() => {
-    dispatch(loadSellingOrders());
-  }, [dispatch]);
+    axios.get(env()+'selling-orders/').then(response => {
+      console.log(response.data)
+      setSellingOrders(response.data)
+    })
+  }, []);
   const classes = useStyles();
   console.log(SellingOrders);
   let total = 0
@@ -83,9 +87,9 @@ const SellingOrderList = (props) => {
                   secondary={parseInt(sellingOrder.total_order_price).toLocaleString("ar-IQ")  + " دينار / " + ' '+ orderStateTranslate[sellingOrder.order_state]}
                 />
                 <ListItemSecondaryAction>
-                <Link  to = {'/selling-order/' + sellingOrder.id} target="_blank" > 
+                <a  href = {'?selling-order=' + sellingOrder.id} target="_blank" >  
                 <VisibilityIcon />
-                </Link>
+                </a>
                 </ListItemSecondaryAction>
               </ListItem>
             ))

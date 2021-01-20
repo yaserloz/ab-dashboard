@@ -25,15 +25,12 @@ const Router = props => {
     return (
         <ReactRouter >
             <Switch>
-                <Route path="/" exact  render={(props) => <Dashboard {...props} page={DashboardIndex} />} />
+                <Route path="/"   render={(props) => <Dashboard {...props} page={DashboardIndex} />} />
                 <Provider store={store}>
-                    <Route path="/purchase-order" exact component={PurchaseOrder}   />
-                    <Route path="/selling-order" exact render={(props) => <Dashboard {...props} page={SellingOrder} />} />
-                    <Route path="/selling-order/:id" exact component={OrderToPdf} />
-                    <Route path="/purchase-order/:id" exact component={PurchaseOrderForm} />
-
-
-
+                    <Route path="purchase-order"  component={PurchaseOrder}   />
+                    <Route path="selling-order"  render={(props) => <Dashboard {...props} page={SellingOrder} />} />
+                    <Route path="selling-order/:id"  component={OrderToPdf} />
+                    <Route path="purchase-order/:id"  component={PurchaseOrderForm} />
                 </Provider>
                 <Route component={NoMatch}/>
             </Switch>

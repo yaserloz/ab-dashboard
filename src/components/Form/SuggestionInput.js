@@ -6,7 +6,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 
 
-function SuggestionInput({selectedOptions , options, label, disabled}) {
+function SuggestionInput({selectedOptions , options, label, disabled, onOptionChange}) {
 
   const [value, setValue] = React.useState(selectedOptions);
   
@@ -37,6 +37,7 @@ function SuggestionInput({selectedOptions , options, label, disabled}) {
 
         onChange={(event, newValue) => {
           setValue(newValue);
+          onOptionChange(newValue)
         }}
 
         inputValue={inputValue}

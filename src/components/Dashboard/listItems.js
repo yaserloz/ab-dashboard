@@ -9,7 +9,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-
+import Test from '../PurchaseOrder/Test'
 
 export const MainListItems = (props) =>{
 
@@ -19,25 +19,25 @@ export const MainListItems = (props) =>{
             <ListItemIcon>
               <DashboardIcon />
             </ListItemIcon>
-            <ListItemText onClick={() => props.onLinkClick('/')} primary="Dashboard" />
+            <ListItemText onClick={() => props.onLinkClick('dashboard')} primary="dashboard" />
           </ListItem>
           <ListItem button>
             <ListItemIcon>
               <ShoppingCartIcon />
             </ListItemIcon>
-            <ListItemText onClick={() => props.onLinkClick('/purchase-order')} primary="Purchases orders" />
+            <ListItemText onClick={() => props.onLinkClick({page:'PurchaseOrderList'})} primary="Purchases orders" />
           </ListItem>
           <ListItem button>
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
-            <ListItemText onClick={() => props.onLinkClick('/selling-order')} primary="Selling orders" primary="Selling orders" />
+            <ListItemText onClick={() => props.onLinkClick({page:'SellingOrderList'})} primary="Selling orders" primary="Selling orders" />
           </ListItem>
           <ListItem button>
             <ListItemIcon>
               <BarChartIcon />
             </ListItemIcon>
-            <ListItemText  primary="Selling points" />
+            <ListItemText onClick={() => props.onLinkClick({page:'products'})}  primary="Products" />
           </ListItem>
           <ListItem button>
             <ListItemIcon>

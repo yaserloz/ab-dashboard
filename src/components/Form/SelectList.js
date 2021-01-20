@@ -1,13 +1,14 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    // margin: theme.spacing(1),
+    minWidth: "100%",
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -16,38 +17,28 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SelectList(props) {
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    age: '',
-    name: 'hai',
-  });
+  const [option, setOption] = React.useState();
 
-  const handleChange = (event) => {
-    const name = event.target.name;
-    setState({
-      ...state,
-      [name]: event.target.value,
-    });
+  const handleChange = event => {
+    setOption(event.target.value);
   };
-
   return (
     <div>
-      <FormControl {...props}  variant="outlined" className={classes.formControl}>
-        <InputLabel htmlFor="outlined-age-native-simple">Age</InputLabel>
+      <FormControl variant="outlined" className={classes.formControl}>
+        <InputLabel id="demo-simple-select-outlined-label">{props.label}</InputLabel>
         <Select
-          native
-          value={state.age}
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+          // defaultValue ={props.selectedOption}
+
+          value={option}
           onChange={handleChange}
-          label="qsdqsdqs"
-          inputProps={{
-            name: 'age',
-            id: 'outlined-age-native-simple',
-          }}
+          label={props.label}
         >
-          <option aria-label="None" value="" />
-            {
-                props.options.length ? props.options.map( (option, index) => <option key={index} value={option.value}>{option.label}</option> ) : null
-            }
-         
+          {props.options &&
+            props.options.map((option) => (
+              <MenuItem value={option}>{option.name}</MenuItem>
+            ))}
         </Select>
       </FormControl>
     </div>

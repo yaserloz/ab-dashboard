@@ -7,6 +7,33 @@ import moment from 'moment'
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import Button from "@material-ui/core/Button";
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
+import env from '../../env'
+
+const StyledTableCell = withStyles((theme: Theme) =>
+  createStyles({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    body: {
+      fontSize: 14,
+    },
+  }),
+)(TableCell);
+
+
+
 
 const useStyles = makeStyles((theme) => ({
     poContainer:{
@@ -33,18 +60,35 @@ const useStyles = makeStyles((theme) => ({
       fontSize:"13px"
     }
   }));
+
+  const StyledTableRow = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  }),
+)(TableRow);
+
+
+
+
 const PurchaseOrderList = (props) => {
-    const dispatch = useDispatch();
-    const purchaseOrders = useSelector(getPurchaseOrders);
-  
+    // const dispatch = useDispatch();
+    // const purchaseOrders = useSelector(getPurchaseOrders);
+    const [PurchaseOrders, setPurchaseOrders] = React.useState([])
     useEffect(() => {
-      dispatch(loadPurchaseOrders());
+      axios.get(env()+'purchase-orders').then(response => {
+        console.log(response.data)
+        setPurchaseOrders(response.data)
+      })
     }, []);
     const classes = useStyles();
   return (
     <>
-      {purchaseOrders.length
-        ? purchaseOrders.map((purchaseOrder, index) => (
+      {/* {PurchaseOrders.length
+        ? PurchaseOrders.map((purchaseOrder, index) => (
             <Paper key={purchaseOrder.OPURCHASE_ORDER_ID} variant="outlined">
               <div className={classes.poContainer}>
                 <div
@@ -81,7 +125,33 @@ const PurchaseOrderList = (props) => {
               </div>
             </Paper>
           ))
-        : null}
+        : null} */}
+
+<TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell align="right">ID</StyledTableCell>
+            <StyledTableCell align="right">Created</StyledTableCell>
+            <StyledTableCell align="right">Supplier</StyledTableCell>
+            <StyledTableCell align="right">Total</StyledTableCell>
+            <StyledTableCell align="right">Action</StyledTableCell>
+
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {PurchaseOrders?  PurchaseOrders.map((row) => (
+            <StyledTableRow key={row.name}>
+              <StyledTableCell align="right">{row.OPURCHASE_ORDER_ID}</StyledTableCell>
+              <StyledTableCell align="right">{row.ORDER_CREATION_TIME}</StyledTableCell>
+              <StyledTableCell align="right">{row.SUPPLIER}</StyledTableCell>
+              <StyledTableCell align="right">{row.TOTAL_ORDER_AMOUNT}</StyledTableCell>
+              <StyledTableCell align="right"><Button onClick={() => props.onLinkClick({page:'PurchaseOrderForm', id:row.OPURCHASE_ORDER_ID})}>Edit</Button></StyledTableCell>
+            </StyledTableRow>
+          )) : null  }
+        </TableBody>
+      </Table>
+    </TableContainer>
     </>
   );
 };

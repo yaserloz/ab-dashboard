@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import logo from "../../logo.svg";
-import {Helmet} from "react-helmet";
-
+import { Helmet } from "react-helmet";
+import env from "../../env";
 const OrderToPdf = (props) => {
   const [orderInfo, setOrderInfo] = useState([]);
 
@@ -11,34 +11,37 @@ const OrderToPdf = (props) => {
   const [orderTotal, setOrderTotal] = useState(0);
 
   function truncate(str, n) {
-    return str.length > n ? str.substr(0, n - 1)+"..."   : str;
+    return str.length > n ? str.substr(0, n - 1) + "..." : str;
   }
 
   useEffect(() => {
-    axios
-      .get("https://api.yaz-fr.com/api/selling-orders/" + props.match.params.id)
-      .then((response) => {
-        setOrderInfo(response.data.orderInfo[0]);
-        if (response.data.orderLines.length > 11) {
-          setOrderLinesPageOne(response.data.orderLines.slice(0, 11));
-          setOrderLinesPageTwo(response.data.orderLines.slice(11));
-        } else {
-          setOrderLinesPageOne(response.data.orderLines);
-        }
-        let total = 0;
-        response.data.orderLines.forEach((line) => {
-          total += parseInt(line.one_product_total);
-        });
-        setOrderTotal(total);
+    axios.get(env() + "selling-orders/" + props.id).then((response) => {
+      setOrderInfo(response.data.orderInfo[0]);
+      if (response.data.orderLines.length > 11) {
+        setOrderLinesPageOne(response.data.orderLines.slice(0, 11));
+        setOrderLinesPageTwo(response.data.orderLines.slice(11));
+      } else {
+        setOrderLinesPageOne(response.data.orderLines);
+      }
+      let total = 0;
+      response.data.orderLines.forEach((line) => {
+        total += parseInt(line.one_product_total);
       });
+      setOrderTotal(total);
+    });
   }, []);
   return (
     <>
       <Helmet>
-        <title>{orderInfo
-                  ? orderInfo.first_name + " " + orderInfo.last_name + "- " +  orderInfo.id
-                  : null}</title>
-
+        <title>
+          {orderInfo
+            ? orderInfo.first_name +
+              " " +
+              orderInfo.last_name +
+              "- " +
+              orderInfo.id
+            : null}
+        </title>
       </Helmet>
       <div style={{ margin: ".5em" }}>
         <div style={{ width: "130px", margin: "0 auto" }}>
@@ -162,7 +165,7 @@ const OrderToPdf = (props) => {
                 : null}
             </div> */}
           {/* </div> */}
-          
+
           <div style={{ flexGrow: "1" }}>
             <div
               style={{ textAlign: "center", padding: "5px" }}
@@ -181,7 +184,9 @@ const OrderToPdf = (props) => {
                         *{" "}
                         {parseInt(line.one_product_price).toLocaleString(
                           "ar-IQ"
-                        )} =   {parseInt(line.one_product_total).toLocaleString(
+                        )}{" "}
+                        ={" "}
+                        {parseInt(line.one_product_total).toLocaleString(
                           "ar-IQ"
                         )}
                       </p>
@@ -191,32 +196,23 @@ const OrderToPdf = (props) => {
             </div>
           </div>
 
-
-
-
-
           <div style={{ flexGrow: "1" }}>
             <div
               style={{ textAlign: "center", padding: "5px" }}
               className="border"
             >
-كود بار            </div>
+              كود بار{" "}
+            </div>
             <div style={{ textAlign: "center" }} className="border">
               {orderLinesPageOne && orderLinesPageOne.length
                 ? orderLinesPageOne.map((line) => {
                     return (
-                      <p>
-                        {line.code_bar ? line.code_bar  : "0000000000000"}
-
-                      </p>
+                      <p>{line.code_bar ? line.code_bar : "0000000000000"}</p>
                     );
                   })
                 : null}
             </div>
           </div>
-
-
-
 
           <div style={{ flexGrow: 5 }}>
             <div
@@ -236,9 +232,10 @@ const OrderToPdf = (props) => {
               {orderLinesPageOne && orderLinesPageOne.length
                 ? orderLinesPageOne.map((line) => {
                     return (
-                      <p style={{marginRight:"5px", direction:'rtl'}}>
-                        {line.title ? line.product_id+":- "+truncate(line.title, 50) : line.product_id+":- من غير عنوان"}{" "}
-                        
+                      <p style={{ marginRight: "5px", direction: "rtl" }}>
+                        {line.title
+                          ? line.product_id + ":- " + truncate(line.title, 50)
+                          : line.product_id + ":- من غير عنوان"}{" "}
                       </p>
                     );
                   })
@@ -249,7 +246,9 @@ const OrderToPdf = (props) => {
         {orderLinesPageTwo && orderLinesPageTwo.length ? (
           <p>صفحة رقم 1</p>
         ) : null}
-        <br /> <br /><br /><br />
+        <br /> <br />
+        <br />
+        <br />
         {
           //xxxxxx
         }
@@ -283,54 +282,51 @@ const OrderToPdf = (props) => {
                   : null}
               </div>
             </div> */}
-          <div style={{ flexGrow: "1" }}>
-            <div
-              style={{ textAlign: "center", padding: "5px" }}
-              className="border"
-            >
-              العدد * السعر المنتج
+            <div style={{ flexGrow: "1" }}>
+              <div
+                style={{ textAlign: "center", padding: "5px" }}
+                className="border"
+              >
+                العدد * السعر المنتج
+              </div>
+              <div style={{ textAlign: "center" }} className="border">
+                {orderLinesPageTwo && orderLinesPageTwo.length
+                  ? orderLinesPageTwo.map((line) => {
+                      return (
+                        <p>
+                          {parseInt(line.one_product_count).toLocaleString(
+                            "ar-IQ"
+                          )}{" "}
+                          *{" "}
+                          {parseInt(line.one_product_price).toLocaleString(
+                            "ar-IQ"
+                          )}{" "}
+                          ={" "}
+                          {parseInt(line.one_product_total).toLocaleString(
+                            "ar-IQ"
+                          )}
+                        </p>
+                      );
+                    })
+                  : null}
+              </div>
             </div>
-            <div style={{ textAlign: "center" }} className="border">
-              {orderLinesPageTwo && orderLinesPageTwo.length
-                ? orderLinesPageTwo.map((line) => {
-                    return (
-                      <p>
-                        {parseInt(line.one_product_count).toLocaleString(
-                          "ar-IQ"
-                        )}{" "}
-                        *{" "}
-                        {parseInt(line.one_product_price).toLocaleString(
-                          "ar-IQ"
-                        )} =   {parseInt(line.one_product_total).toLocaleString(
-                          "ar-IQ"
-                        )}
-                      </p>
-                    );
-                  })
-                : null}
-            </div>
-          </div>
-
 
             <div style={{ flexGrow: "1" }}>
-            <div
-              style={{ textAlign: "center", padding: "5px" }}
-              className="border"
-            >
-كود بار            </div>
-            <div style={{ textAlign: "center" }} className="border">
-              {orderLinesPageTwo && orderLinesPageTwo.length
-                ? orderLinesPageTwo.map((line) => {
-                    return (
-                      <p>
-                        {line.code_bar ? line.code_bar  : " "}
-
-                      </p>
-                    );
-                  })
-                : null}
+              <div
+                style={{ textAlign: "center", padding: "5px" }}
+                className="border"
+              >
+                كود بار{" "}
+              </div>
+              <div style={{ textAlign: "center" }} className="border">
+                {orderLinesPageTwo && orderLinesPageTwo.length
+                  ? orderLinesPageTwo.map((line) => {
+                      return <p>{line.code_bar ? line.code_bar : " "}</p>;
+                    })
+                  : null}
+              </div>
             </div>
-          </div>
 
             <div style={{ flexGrow: 5 }}>
               <div
@@ -350,10 +346,11 @@ const OrderToPdf = (props) => {
                 {orderLinesPageTwo && orderLinesPageTwo.length
                   ? orderLinesPageTwo.map((line) => {
                       return (
-                        <p style={{marginRight:"5px", direction:'rtl'}}>
-                        {line.title ? line.product_id+":- "+truncate(line.title, 50) : line.product_id+":- من غير عنوان"}{" "}
-                        
-                      </p>
+                        <p style={{ marginRight: "5px", direction: "rtl" }}>
+                          {line.title
+                            ? line.product_id + ":- " + truncate(line.title, 50)
+                            : line.product_id + ":- من غير عنوان"}{" "}
+                        </p>
                       );
                     })
                   : null}
