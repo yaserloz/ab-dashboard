@@ -8,10 +8,9 @@ export default function DrawerC(props) {
   }
 
   return (
-    <div>
-
+    <div style={{width:"50%"}}>
         <React.Fragment key={'top'}>
-          <Drawer anchor="top" open={props.show } onClose={() => {}} >
+          <Drawer  anchor={props.anchor ? props.anchor : 'top'} open={props.show } onClose={() => {}} >
            {React.cloneElement(props.children, { onDrawerCloseHandler: drawercloseHandler})}
           </Drawer>
         </React.Fragment>

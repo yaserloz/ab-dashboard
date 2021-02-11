@@ -19,10 +19,11 @@ import {
 } from "../components/Dashboard/listItems";
 import PurchaseOrderList from "../components/PurchaseOrder/PurchaseOrderList";
 import PurchaseOrderForm from "../components/PurchaseOrder/PurchaseOrderForm";
-import SellingOrderList from "../components/SellingOrder/SellingOrderList"
-import OrderToPdf from '../components/OrderToPdf/OrderToPdf'
-import SellingOrderForm from '../components/SellingOrder/SellingOrderForm'
-import Products from '../views/Products'
+import SellingOrderList from "../components/SellingOrder/SellingOrderList";
+import OrderToPdf from "../components/OrderToPdf/OrderToPdf";
+import SellingOrderForm from "../components/SellingOrder/SellingOrderForm";
+import Products from "../views/Products";
+import Shipment from '../views/Sipments'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -119,15 +120,13 @@ export default function Dashboard(props) {
     setCurrentPage(object);
   };
 
-    var url_string = window.location.href
-var url = new URL(url_string);
-var c = url.searchParams.get("selling-order");
+  var url_string = window.location.href;
+  var url = new URL(url_string);
+  var c = url.searchParams.get("selling-order");
 
-if(c){
-  return (
-    <OrderToPdf id={c} />
-  )
-}
+  if (c) {
+    return <OrderToPdf id={c} />;
+  }
 
   return (
     <div className={classes.root}>
@@ -196,14 +195,14 @@ if(c){
             po={currentPage.id}
           />
         ) : currentPage && currentPage.page === "SellingOrderList" ? (
-          <SellingOrderList
-            onLinkClick={goToPageHandler}
-          />
+          <SellingOrderList onLinkClick={goToPageHandler} />
         ) : currentPage && currentPage.page === "products" ? (
-          <Products
-            onLinkClick={goToPageHandler}
-          />
-        ) : <SellingOrderForm id={66} />}
+          <Products onLinkClick={goToPageHandler} />
+        ) : currentPage && currentPage.page === "shipment" ? (
+          <Shipment onLinkClick={goToPageHandler} />
+        ) : (
+          <div>INDEX</div>
+        )}
       </main>
     </div>
   );

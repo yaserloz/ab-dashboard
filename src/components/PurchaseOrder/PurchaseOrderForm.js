@@ -84,7 +84,6 @@ const PurchaseOrderForm = (props) => {
   };
 
   const onDeliveryTypesHandler = (deliveryType) => {
-    console.log(deliveryType);
     const purchaseOrderCopy = { ...purchaseOrder };
     purchaseOrderCopy.orderInfo[0].delivery_type_id = deliveryType.id;
     purchaseOrderCopy.orderInfo[0].name = deliveryType.name;
@@ -179,7 +178,7 @@ const PurchaseOrderForm = (props) => {
   };
 
   const fetchProductByItsCodeBar = async (codeBar) =>
-    await axios.get(`${env()}product/${codeBar}`);
+    await axios.get(`${env()}products/codebar/${codeBar}`);
 
   const addEmptyOrderLine = () => {
     const purchaseOrderCopy = { ...purchaseOrder };
@@ -220,7 +219,9 @@ const PurchaseOrderForm = (props) => {
       }
     );
     if (!response.data.error) {
-      // fetchPurchaseOrder()
+      axios.get(env() + "purchase-order/" + props.po).then((response) => {
+        setPurchaseOrder(response.data);
+      });
       return;
     }
 

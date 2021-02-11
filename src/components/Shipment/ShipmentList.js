@@ -68,12 +68,10 @@ const StyledTableRow = withStyles((theme: Theme) =>
   })
 )(TableRow);
 
-const PurchaseOrderList = (props) => {
-  // const dispatch = useDispatch();
-  // const purchaseOrders = useSelector(getPurchaseOrders);
+const ShipmentList = (props) => {
   const [PurchaseOrders, setPurchaseOrders] = React.useState([]);
   useEffect(() => {
-    axios.get(env() + "purchase-orders").then((response) => {
+    axios.get(env() + "shipments").then((response) => {
       console.log(response.data);
       setPurchaseOrders(response.data);
     });
@@ -86,9 +84,8 @@ const PurchaseOrderList = (props) => {
           <TableHead>
             <TableRow>
               <StyledTableCell align="right">ID</StyledTableCell>
-              <StyledTableCell align="right">Created</StyledTableCell>
-              <StyledTableCell align="right">Supplier</StyledTableCell>
-              <StyledTableCell align="right">Total</StyledTableCell>
+              <StyledTableCell align="right">From</StyledTableCell>
+              <StyledTableCell align="right">To</StyledTableCell>
               <StyledTableCell align="right">Action</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -97,24 +94,18 @@ const PurchaseOrderList = (props) => {
               ? PurchaseOrders.map((row) => (
                   <StyledTableRow key={row.name}>
                     <StyledTableCell align="right">
-                      {row.OPURCHASE_ORDER_ID}
+                      {row.id}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {row.ORDER_CREATION_TIME}
+                      {row.from_sp}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {row.SUPPLIER}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {row.TOTAL_ORDER_AMOUNT}
+                      {row.to_sp}
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       <Button
                         onClick={() =>
-                          props.onLinkClick({
-                            page: "PurchaseOrderForm",
-                            id: row.OPURCHASE_ORDER_ID,
-                          })
+                          props.onEditHandler(row.id)
                         }
                       >
                         Edit
@@ -130,4 +121,4 @@ const PurchaseOrderList = (props) => {
   );
 };
 
-export default PurchaseOrderList;
+export default ShipmentList;

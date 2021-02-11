@@ -7,13 +7,27 @@ import Grid from "@material-ui/core/Grid";
 
 const EditProductForm = (props) => {
   const [product, setProduct] = React.useState([]);
+  const [images, setImages] = React.useState([]);
+
+
   React.useEffect(() => {
-    axios.get(env() + "products/" + props.productId).then((response) => {
+
+    getProductDetails().then((response) => {
       console.log(response.data);
       setProduct(response.data);
     });
+
+    getImages().then(response => {
+      console.log(response.data);
+      setImages(response.data)
+    })
+
   }, [props.productId]);
 
+  const getProductDetails = () => {
+    return axios.get(env() + "products/" + props.productId);
+  };
+  const getImages = () => axios.get('http://yaz-fr.com/ab-online-cdn/images/images.php?productId='+props.productId)
   const codeBarChangeHandler = (event) => {
     const productCodeBar = event.target.value;
     const productCopy = { ...product };
@@ -44,13 +58,104 @@ const EditProductForm = (props) => {
 
   const saveProductDetails = () => {
     const productCopy = { ...product };
-    const productDetails = productCopy.product[0]
-    axios.patch(env() + "products",productDetails).then((response) => {
+    const productDetails = productCopy.product[0];
+    axios.post(env() + "products", productDetails).then((response) => {
       console.log(response.data);
       // setProduct(response.data);
     });
+  };
+
+  const languageTitleChangeHandler = (index) => (event) => {
+    const title = event.target.value;
+    const productCopy = { ...product };
+    productCopy.titleTranslations[index].title = title;
+    setProduct(productCopy);
+  };
+
+  const priceChangeHandler = (event) => {
+    const price = event.target.value;
+    const productCopy = { ...product };
+    productCopy.price = price;
+    setProduct(productCopy);
+  };
+
+  const saveNewPriceHandler = () => {
+    const productCopy = { ...product };
+    const price = productCopy.price;
+    axios.post(env()+"products/"+props.productId+"/price",{price, productId:props.productId}).then(response=> {
+      getProductDetails().then((response) => {
+        setProduct(response.data);
+      });
+    })
   }
 
+  const imagesChangeHandler = (index) => (event) => {
+    const image = event.target.value;
+    const productCopy = { ...product };
+    productCopy.images[index].url = image;
+    setProduct(productCopy);
+  };
+
+  const saveTranslationHandler = (index) => (event) => {
+    const productCopy = { ...product };
+    if (productCopy.titleTranslations[index].product === null)
+      productCopy.titleTranslations[index].product = props.productId;
+    const translation = productCopy.titleTranslations[index];
+    axios
+      .post(env() + "translations", translation)
+      .then((response) => {
+        getProductDetails().then((response) => {
+          setProduct(response.data);
+        });
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  };
+
+  const addNewProductImageHandler = () => {
+    const productCopy = { ...product };
+    productCopy.images.push({
+      id: null,
+      product: props.productId,
+      url: null,
+      edit: true,
+    });
+    setProduct(productCopy);
+  };
+
+  const saveImageHandler = (index) => (event) => {
+    const productCopy = { ...product };
+    const image = productCopy.images[index];
+    axios.post(env() + "images", image).then((response) => {
+      getProductDetails().then((response) => {
+        setProduct(response.data);
+      });
+    });
+  };
+
+  const fileUpload = e => {
+
+      const files = Array.from(e.target.files)
+
+  
+      const formData = new FormData()
+  
+      files.forEach((file, i) => {
+        formData.append(i, file)
+      })
+      
+      formData.append("productId", props.productId)
+      
+      formData.append("t", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFMUUFJU0kgWUFTSVIiLCJpYXQiOjE1MTYyMzkwMjJ9._QzNFrX99dwLQboNZsCGNbFdFFapCFZtSbKXVkWfdG0")
+
+      axios.post(`http://yaz-fr.com/ab-online-cdn/images/images.php`,formData)
+      .then(res=>{
+        console.log(res.data)
+      })
+
+    
+  }
   console.log(product.product && product);
   return (
     <div style={{ padding: "3em" }}>
@@ -133,10 +238,11 @@ const EditProductForm = (props) => {
                     label="Title"
                     value={language.title}
                     placeholder="Title"
+                    onChange={languageTitleChangeHandler(index)}
                   />
                 </Grid>
                 <Grid item>
-                  <Button>Save</Button>
+                  <Button onClick={saveTranslationHandler(index)}>Save</Button>
                 </Grid>
               </Grid>
             </>
@@ -193,24 +299,32 @@ const EditProductForm = (props) => {
         label="Price"
         value={product && product.price}
         placeholder="PRICE"
+        onChange={priceChangeHandler}
       />
+       <Button onClick={saveNewPriceHandler}>Save price</Button>
       <hr />
-      <h1>
-        IMAGES <Button>Add new image</Button>
-      </h1>
+      <h1>PURCHAISE PRICES</h1>
       {product.product &&
-        product.images.map((image, index) => {
+        product.purchaisePrices.map((price, index) => {
+          return (
+            <div>{price.unit_price}</div>
+          )
+        })}
+      <h1>
+        IMAGES{" "}
+        <Button onClick={addNewProductImageHandler}>Add new image</Button>
+        <input type='file' id='multi' onChange={fileUpload} multiple />
+      </h1>
+      {images &&
+        images.map((image, index) => {
           return (
             <>
               <Grid spacing={3} key={index}>
                 <Grid lg={6} item>
-                  <TextInput
-                    InputLabelProps={{ shrink: true }}
-                    fullWidth
-                    label="File name"
-                    value={image.url}
-                    placeholder="File name"
-                  />
+                  <div>{image}</div>
+                  {image.edit ? (
+                    <Button onClick={saveImageHandler(index)}>Save</Button>
+                  ) : <Button onClick={saveImageHandler(index)}>Save</Button>}
                 </Grid>
               </Grid>
             </>
