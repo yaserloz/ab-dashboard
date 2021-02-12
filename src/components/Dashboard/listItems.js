@@ -45,6 +45,12 @@ export const MainListItems = (props) =>{
             </ListItemIcon>
             <ListItemText onClick={() => props.onLinkClick({page:'shipment'})}  primary="Shipment" />
           </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <LayersIcon />
+            </ListItemIcon>
+            <ListItemText onClick={() => props.onLinkClick({page:'stock'})}  primary="Stock" />
+          </ListItem>
         </div>
       );
       

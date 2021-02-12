@@ -24,6 +24,7 @@ import OrderToPdf from "../components/OrderToPdf/OrderToPdf";
 import SellingOrderForm from "../components/SellingOrder/SellingOrderForm";
 import Products from "../views/Products";
 import Shipment from '../views/Sipments'
+import Stock from '../views/Stock'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -200,6 +201,8 @@ export default function Dashboard(props) {
           <Products onLinkClick={goToPageHandler} />
         ) : currentPage && currentPage.page === "shipment" ? (
           <Shipment onLinkClick={goToPageHandler} />
+        ) : currentPage && currentPage.page === "stock" ? (
+          <Stock onLinkClick={goToPageHandler} />
         ) : (
           <div>INDEX</div>
         )}
