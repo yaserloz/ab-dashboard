@@ -4,30 +4,43 @@ import axios from "axios";
 import env from "../../env";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-
+import Modal from "../Modal/Modal";
+import TextEditor from "../TextEditor/TextEditor";
+import DraftTextEditor from "../TextEditor/DraftTextEditor";
 const EditProductForm = (props) => {
   const [product, setProduct] = React.useState([]);
   const [images, setImages] = React.useState([]);
-
+  const [
+    selectedProductDescriptionToEdit,
+    setSelectedProductDescriptionToEdit,
+  ] = React.useState(false);
+  const [
+    openProductDescriptionModal,
+    setOpenProductDescriptionModal,
+  ] = React.useState(false);
 
   React.useEffect(() => {
-
     getProductDetails().then((response) => {
       console.log(response.data);
       setProduct(response.data);
     });
 
-    getImages().then(response => {
+    getImages().then((response) => {
       console.log(response.data);
-      setImages(response.data)
-    })
-
+      setImages(response.data);
+    });
   }, [props.productId]);
 
   const getProductDetails = () => {
     return axios.get(env() + "products/" + props.productId);
   };
-  const getImages = () => axios.get('http://yaz-fr.com/ab-online-cdn/images/images.php?productId='+props.productId)
+
+  const getImages = () =>
+    axios.get(
+      "http://yaz-fr.com/ab-online-cdn/images/images.php?productId=" +
+        props.productId
+    );
+
   const codeBarChangeHandler = (event) => {
     const productCodeBar = event.target.value;
     const productCopy = { ...product };
@@ -82,12 +95,17 @@ const EditProductForm = (props) => {
   const saveNewPriceHandler = () => {
     const productCopy = { ...product };
     const price = productCopy.price;
-    axios.post(env()+"products/"+props.productId+"/price",{price, productId:props.productId}).then(response=> {
-      getProductDetails().then((response) => {
-        setProduct(response.data);
+    axios
+      .post(env() + "products/" + props.productId + "/price", {
+        price,
+        productId: props.productId,
+      })
+      .then((response) => {
+        getProductDetails().then((response) => {
+          setProduct(response.data);
+        });
       });
-    })
-  }
+  };
 
   const imagesChangeHandler = (index) => (event) => {
     const image = event.target.value;
@@ -134,31 +152,74 @@ const EditProductForm = (props) => {
     });
   };
 
-  const fileUpload = e => {
+  const fileUpload = (e) => {
+    const files = Array.from(e.target.files);
 
-      const files = Array.from(e.target.files)
+    const formData = new FormData();
 
-  
-      const formData = new FormData()
-  
-      files.forEach((file, i) => {
-        formData.append(i, file)
+    files.forEach((file, i) => {
+      formData.append(i, file);
+    });
+
+    formData.append("productId", props.productId);
+
+    formData.append(
+      "t",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFMUUFJU0kgWUFTSVIiLCJpYXQiOjE1MTYyMzkwMjJ9._QzNFrX99dwLQboNZsCGNbFdFFapCFZtSbKXVkWfdG0"
+    );
+
+    axios
+      .post(`http://yaz-fr.com/ab-online-cdn/images/images.php`, formData)
+      .then((res) => {
+        console.log(res.data);
+      });
+  };
+
+  const showProductDescriptionEditor = (index) => (e) => {
+    const descriptionsTranslations = [...product.descriptionsTranslations][
+      index
+    ];
+    setSelectedProductDescriptionToEdit(descriptionsTranslations);
+    setOpenProductDescriptionModal(true);
+  };
+
+  const onProductDescriptionChange = (content) => {
+    const selectedProductDescriptionToEditCopy = {...selectedProductDescriptionToEdit}
+    selectedProductDescriptionToEditCopy.description = content
+    setSelectedProductDescriptionToEdit(selectedProductDescriptionToEditCopy)
+  };
+
+  const onProductDescriptionCloseHandler = () => {
+    setOpenProductDescriptionModal(false);
+    saveProductDescription()
+  };
+
+  const saveProductDescription = () => {
+    axios
+      .post(env() + "products/descriptions", {
+        id:selectedProductDescriptionToEdit.id,
+        language:selectedProductDescriptionToEdit.language,
+        product:props.productId,
+        description:selectedProductDescriptionToEdit.description
+      } )
+      .then((response) => {
+        getProductDetails().then((response) => {
+          setProduct(response.data);
+        });
       })
-      
-      formData.append("productId", props.productId)
-      
-      formData.append("t", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFMUUFJU0kgWUFTSVIiLCJpYXQiOjE1MTYyMzkwMjJ9._QzNFrX99dwLQboNZsCGNbFdFFapCFZtSbKXVkWfdG0")
-
-      axios.post(`http://yaz-fr.com/ab-online-cdn/images/images.php`,formData)
-      .then(res=>{
-        console.log(res.data)
-      })
-
-    
-  }
-  console.log(product.product && product);
+      .catch((error) => console.log(error));
+  };
   return (
     <div style={{ padding: "3em" }}>
+      <Modal openModal={openProductDescriptionModal}>
+        <Button onClick={saveProductDescription}>Save</Button>
+        <Button onClick={onProductDescriptionCloseHandler}>Close</Button>
+
+        <DraftTextEditor
+          value={selectedProductDescriptionToEdit.description || " "}
+          onChange={onProductDescriptionChange}
+        />
+      </Modal>
       <h1>PRODUCT DETAIL : {props.productId}</h1>
       <TextInput
         InputLabelProps={{ shrink: true }}
@@ -259,6 +320,7 @@ const EditProductForm = (props) => {
                 <Grid item>
                   {" "}
                   <TextInput
+                    disabled
                     InputLabelProps={{ shrink: true }}
                     fullWidth
                     label="Language"
@@ -268,6 +330,7 @@ const EditProductForm = (props) => {
                 </Grid>
                 <Grid item>
                   <TextInput
+                    disabled
                     InputLabelProps={{ shrink: true }}
                     fullWidth
                     label="Language code"
@@ -276,16 +339,9 @@ const EditProductForm = (props) => {
                   />
                 </Grid>
                 <Grid item>
-                  <TextInput
-                    InputLabelProps={{ shrink: true }}
-                    fullWidth
-                    label="Description"
-                    value={language.description}
-                    placeholder="Description"
-                  />
-                </Grid>
-                <Grid item>
-                  <Button>Save</Button>
+                  <Button onClick={showProductDescriptionEditor(index)}>
+                    Edit
+                  </Button>
                 </Grid>
               </Grid>
             </>
@@ -301,19 +357,17 @@ const EditProductForm = (props) => {
         placeholder="PRICE"
         onChange={priceChangeHandler}
       />
-       <Button onClick={saveNewPriceHandler}>Save price</Button>
+      <Button onClick={saveNewPriceHandler}>Save price</Button>
       <hr />
       <h1>PURCHAISE PRICES</h1>
       {product.product &&
         product.purchaisePrices.map((price, index) => {
-          return (
-            <div>{price.unit_price}</div>
-          )
+          return <div>{price.unit_price}</div>;
         })}
       <h1>
         IMAGES{" "}
         <Button onClick={addNewProductImageHandler}>Add new image</Button>
-        <input type='file' id='multi' onChange={fileUpload} multiple />
+        <input type="file" id="multi" onChange={fileUpload} multiple />
       </h1>
       {images &&
         images.map((image, index) => {
@@ -324,7 +378,9 @@ const EditProductForm = (props) => {
                   <div>{image}</div>
                   {image.edit ? (
                     <Button onClick={saveImageHandler(index)}>Save</Button>
-                  ) : <Button onClick={saveImageHandler(index)}>Save</Button>}
+                  ) : (
+                    <Button onClick={saveImageHandler(index)}>Save</Button>
+                  )}
                 </Grid>
               </Grid>
             </>
