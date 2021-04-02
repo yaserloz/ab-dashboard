@@ -44,7 +44,7 @@ const EditProductForm = (props) => {
   const codeBarChangeHandler = (event) => {
     const productCodeBar = event.target.value;
     const productCopy = { ...product };
-    productCopy.product[0].code_bar = productCodeBar;
+    productCopy.product.code_bar = productCodeBar;
     setProduct(productCopy);
   };
 
@@ -225,7 +225,7 @@ const EditProductForm = (props) => {
         InputLabelProps={{ shrink: true }}
         fullWidth
         label="Codebar"
-        value={product && product.product && product.product[0].code_bar}
+        value={product && product.product && product.product.code_bar}
         placeholder="Codebar"
         onChange={codeBarChangeHandler}
       />
@@ -235,7 +235,7 @@ const EditProductForm = (props) => {
         InputLabelProps={{ shrink: true }}
         fullWidth
         label="Local code bar"
-        value={product && product.product && product.product[0].local_code_bar}
+        value={product && product.product && product.product.local_code_bar}
         placeholder="Local code bar"
         onChange={localCodeBarChangeHandler}
       />
@@ -245,7 +245,7 @@ const EditProductForm = (props) => {
         InputLabelProps={{ shrink: true }}
         fullWidth
         label="Weight"
-        value={product && product.product && product.product[0].weight}
+        value={product && product.product && product.product.weight}
         placeholder="Weight"
         onChange={weightChangeHandler}
       />
@@ -255,7 +255,7 @@ const EditProductForm = (props) => {
         InputLabelProps={{ shrink: true }}
         fullWidth
         label="Volume"
-        value={product && product.product && product.product[0].volume}
+        value={product && product.product && product.product.volume}
         placeholder="Volume"
         onChange={volumeChangeHandler}
       />

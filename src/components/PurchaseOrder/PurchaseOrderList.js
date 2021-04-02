@@ -97,23 +97,23 @@ const PurchaseOrderList = (props) => {
               ? PurchaseOrders.map((row) => (
                   <StyledTableRow key={row.name}>
                     <StyledTableCell align="right">
-                      {row.OPURCHASE_ORDER_ID}
+                      {row.id}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {row.ORDER_CREATION_TIME}
+                      {row.creationDate}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {row.SUPPLIER}
+                      {row.supplier}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {row.TOTAL_ORDER_AMOUNT}
+                      {row.orderTotalPrice}
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       <Button
                         onClick={() =>
                           props.onLinkClick({
                             page: "PurchaseOrderForm",
-                            id: row.OPURCHASE_ORDER_ID,
+                            id: row.id,
                           })
                         }
                       >
