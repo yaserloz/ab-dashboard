@@ -4,7 +4,7 @@ const env = () => {
   }
 
   if (process.env.NODE_ENV === 'production') {
-    return 'https://api.yaz-fr.com/';
+    return 'http://alqaisi.freeboxos.fr/api.yaz-fr.com/';
   }
   return '';
 };
