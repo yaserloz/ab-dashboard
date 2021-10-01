@@ -9,6 +9,7 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
 
 const states = [
   {
@@ -26,10 +27,11 @@ const states = [
 ];
 
 const AccountProfileDetails = (props) => {
+  const user = useSelector((state) => state.auth.user)
   const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
+    firstName: user.data.firstname,
+    lastName: user.data.lastname,
+    email: user.data.email,
     phone: '',
     state: 'Alabama',
     country: 'USA'

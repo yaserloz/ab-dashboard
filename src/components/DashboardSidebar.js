@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+
 import {
   Avatar,
   Box,
@@ -23,11 +25,9 @@ import {
 } from 'react-feather';
 import NavItem from './NavItem';
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
-};
+
+
+
 
 const items = [
   {
@@ -74,7 +74,7 @@ const items = [
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
-
+  const user = useSelector((state) => state.auth.user)
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -97,7 +97,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           p: 2
         }}
       >
-        <Avatar
+        {/* <Avatar
           component={RouterLink}
           src={user.avatar}
           sx={{
@@ -106,19 +106,14 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
             height: 64
           }}
           to="/app/account"
-        />
+        /> */}
         <Typography
           color="textPrimary"
           variant="h5"
         >
-          {user.name}
+          {user && user.data.firstname+ " " + user.data.lastname}
         </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
-          {user.jobTitle}
-        </Typography>
+
       </Box>
       <Divider />
       <Box sx={{ p: 2 }}>

@@ -1,22 +1,29 @@
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addToken, addRefreshToken, logoutUser, addUser } from '../store/auth';
+import axios from 'axios';
 import {
   Box,
   Button,
   Container,
-  Grid,
-  Link,
   TextField,
   Typography
 } from '@material-ui/core';
-import FacebookIcon from 'src/icons/Facebook';
-import GoogleIcon from 'src/icons/Google';
+import jwt from 'jwt-decode' // import dependency
+
+// import { Link as RouterLink } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  // dispatch(logoutUser());
+  useEffect(() => {
+    dispatch(logoutUser())
+  }, []);
   return (
     <>
       <Helmet>
@@ -38,11 +45,27 @@ const Login = () => {
               password: 'Password123'
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+              email: Yup.string()
+                .email('Must be a valid email')
+                .max(255)
+                .required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={(userInfo, { setSubmitting }) => {
+              axios
+                .post('token', {
+                  email: userInfo.email,
+                  password: userInfo.password,
+                  grantType: 'token'
+                })
+                .then((response) => {
+                  dispatch(addRefreshToken(response.data.refresh_token));
+                  dispatch(addToken(response.data.token));
+                  console.log("user", jwt(response.data.token));
+                  dispatch(addUser(jwt(response.data.token)));
+                  navigate('/app/dashboard', { replace: true });
+                });
+              setSubmitting(false);
             }}
           >
             {({
@@ -56,70 +79,11 @@ const Login = () => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box sx={{ mb: 3 }}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
+                  <Typography color="textPrimary" variant="h2">
                     Sign in
                   </Typography>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    Sign in on the internal platform
-                  </Typography>
                 </Box>
-                <Grid
-                  container
-                  spacing={3}
-                >
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      color="primary"
-                      fullWidth
-                      startIcon={<FacebookIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      fullWidth
-                      startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Box
-                  sx={{
-                    pb: 1,
-                    pt: 3
-                  }}
-                >
-                  <Typography
-                    align="center"
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    or login with email address
-                  </Typography>
-                </Box>
+
                 <TextField
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
@@ -158,20 +122,6 @@ const Login = () => {
                     Sign in now
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Don&apos;t have an account?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/register"
-                    variant="h6"
-                  >
-                    Sign up
-                  </Link>
-                </Typography>
               </form>
             )}
           </Formik>
