@@ -8,9 +8,10 @@ import App from './App';
 import env from './env';
 import { addToken, addRefreshToken } from './store/auth';
 
-console.log(env());
 
 axios.defaults.baseURL = env();
+axios.defaults.withCredentials = true;
+axios.defaults.credentials =true;
 
 axios.interceptors.request.use(
   (request) => {
@@ -41,18 +42,14 @@ axios.interceptors.response.use(
 
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = store.getState().auth.refreshToken;
+      const refreshToken = localStorage.getItem('refres_htoken');
       return axios.post('token',
       {
-          "grantType": "refresh_token",
-          "refresh_token": refreshToken
+          grantType: "refresh_token",
+          app: "ab"
       }).then(res => {
         store.dispatch(addToken(res.data.token));
-        // store.dispatch(addRefreshToken(res.data.refresh_token));
         return axios(originalRequest);
-        if (res.status === 200) {
-          
-        }
     })
     }
     // alert(error.response.data.Explination);

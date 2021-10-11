@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { Box, Container, Grid, Pagination } from '@material-ui/core';
 import ProductListToolbar from 'src/components/product/ProductListToolbar';
 import ProductCard from 'src/components/product//ProductCard';
-import products from 'src/__mocks__/products';
 import { addProducts } from '../store/products';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';

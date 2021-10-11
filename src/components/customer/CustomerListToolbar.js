@@ -17,38 +17,75 @@ const CustomerListToolbar = (props) => (
         justifyContent: 'flex-end'
       }}
     >
-      <Button>
-        Import
-      </Button>
-      <Button sx={{ mx: 1 }}>
-        Export
-      </Button>
-      <Button
-        color="primary"
-        variant="contained"
-      >
+      <Button>Import</Button>
+      <Button sx={{ mx: 1 }}>Export</Button>
+      <Button color="primary" variant="contained">
         Add customer
       </Button>
     </Box>
     <Box sx={{ mt: 3 }}>
       <Card>
         <CardContent>
-          <Box sx={{ maxWidth: 500 }}>
+          <Box sx={{ maxWidth: 400 }}>
             <TextField
+              sx={{ paddingBottom: '1em' }}
               fullWidth
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SvgIcon
-                      fontSize="small"
-                      color="action"
-                    >
+                    <SvgIcon fontSize="small" color="action">
                       <SearchIcon />
                     </SvgIcon>
                   </InputAdornment>
                 )
               }}
-              placeholder="Search customer"
+              placeholder="First name"
+              variant="outlined"
+            />
+            <TextField
+              sx={{ paddingBottom: '1em' }}
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SvgIcon fontSize="small" color="action">
+                      <SearchIcon />
+                    </SvgIcon>
+                  </InputAdornment>
+                )
+              }}
+              placeholder="Last name"
+              variant="outlined"
+            />
+            <TextField
+              sx={{ paddingBottom: '1em' }}
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SvgIcon fontSize="small" color="action">
+                      <SearchIcon />
+                    </SvgIcon>
+                  </InputAdornment>
+                )
+              }}
+              placeholder="Telephone"
+              variant="outlined"
+            />
+
+            <TextField
+              sx={{ paddingBottom: '1em' }}
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SvgIcon fontSize="small" color="action">
+                      <SearchIcon />
+                    </SvgIcon>
+                  </InputAdornment>
+                )
+              }}
+              placeholder="Address"
               variant="outlined"
             />
           </Box>

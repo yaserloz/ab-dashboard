@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import {useEffect,useState} from 'react'
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -17,11 +18,25 @@ import {
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 
-const CustomerListResults = ({ customers, ...rest }) => {
+const CustomerListResults = ({  ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
+  const [customers, setCustomers] = useState([])
+  const [totalCustomersCounts, setTotalCustomersCounts] = useState(0)
+  useEffect(() => {
+    getcustomers()
+  }, [page,limit])
 
+  const getcustomers = () => {
+    axios
+    .get(`clients?page=${page}&take=${limit}`)
+    .then((response) => {
+      setCustomers(response.data.data);
+      console.log(response.data['total-result-count']);
+      setTotalCustomersCounts(response.data['total-result-count'])
+    });
+  }
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
 
@@ -56,10 +71,11 @@ const CustomerListResults = ({ customers, ...rest }) => {
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
+    setPage(1);
   };
 
   const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage+1);
   };
 
   return (
@@ -98,7 +114,7 @@ const CustomerListResults = ({ customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {customers && customers.map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -128,7 +144,7 @@ const CustomerListResults = ({ customers, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.name}
+                        {customer.first_name} {customer.last_name}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -136,13 +152,13 @@ const CustomerListResults = ({ customers, ...rest }) => {
                     {customer.email}
                   </TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {customer.address_line}
                   </TableCell>
                   <TableCell>
-                    {customer.phone}
+                    {customer.telephone}
                   </TableCell>
                   <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    {moment(customer.created_at).format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))}
@@ -152,12 +168,14 @@ const CustomerListResults = ({ customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={totalCustomersCounts}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
-        page={page}
+        page={page -1 }
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
+        showLastButton = {true}
+        showFirstButton = {true}
       />
     </Card>
   );

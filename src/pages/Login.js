@@ -55,13 +55,12 @@ const Login = () => {
               axios
                 .post('token', {
                   email: userInfo.email,
+                  app:'ab',
                   password: userInfo.password,
                   grantType: 'token'
                 })
                 .then((response) => {
-                  dispatch(addRefreshToken(response.data.refresh_token));
                   dispatch(addToken(response.data.token));
-                  console.log("user", jwt(response.data.token));
                   dispatch(addUser(jwt(response.data.token)));
                   navigate('/app/dashboard', { replace: true });
                 });
