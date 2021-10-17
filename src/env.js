@@ -6,7 +6,7 @@ const env = () => {
   if (process.env.NODE_ENV === 'production') {
     return 'https://yaz-fr.com/api.yaz-fr.com/';
   }
-  return '';
+  return ''; 
 };
 
 export default env;
