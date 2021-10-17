@@ -7,7 +7,7 @@ import { addProducts } from '../store/products';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import DialogResponsive from '../components/muDialog/DialogResponsive';
-import {addingProducts} from '../store/basket'
+import {addingProducts} from '../store/backet'
 import {
   Button,
   Card,
@@ -16,6 +16,7 @@ import {
   InputAdornment,
   SvgIcon
 } from '@material-ui/core';
+ 
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -76,13 +77,14 @@ const ProductList = () => {
       alert('You should enter a value');
       return false;
     }
+    console.log("selectedSellingPoint",selectedSellingPoint);
 
-    console.log(selectedProductCountValue)
     dispatch(addingProducts({
-      id:1,
+      id:selectedProductToAddToBascket.id,
       user:2,
+      sellingPoint:selectedSellingPoint,
       count:selectedProductCountValue,
-      price:100
+      price:selectedProductToAddToBascket.price
     }));
 
     //Do presiste operation 

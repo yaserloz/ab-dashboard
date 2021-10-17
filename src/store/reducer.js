@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
 import auth from './auth';
 import products from './products';
-import basket from './basket'
+import backet from './backet'
+import notifications from './notification'
 
 export default combineReducers({
   auth,
   products,
-  basket
+  backet,
+  notifications
 });
