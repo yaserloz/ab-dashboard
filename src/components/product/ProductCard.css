@@ -1,0 +1,7 @@
+.shopping-basket{
+    cursor: pointer;
+}
+
+.shopping-basket:hover{
+    background-color:azure;
+}

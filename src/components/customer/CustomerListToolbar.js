@@ -17,8 +17,6 @@ const CustomerListToolbar = (props) => (
         justifyContent: 'flex-end'
       }}
     >
-      <Button>Import</Button>
-      <Button sx={{ mx: 1 }}>Export</Button>
       <Button color="primary" variant="contained">
         Add customer
       </Button>
@@ -26,9 +24,9 @@ const CustomerListToolbar = (props) => (
     <Box sx={{ mt: 3 }}>
       <Card>
         <CardContent>
-          <Box sx={{ maxWidth: 400 }}>
+          <Box sx={{ maxWidth: 900, display:"flex" }}>
             <TextField
-              sx={{ paddingBottom: '1em' }}
+              sx={{ paddingRight: '1em' }}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -43,7 +41,7 @@ const CustomerListToolbar = (props) => (
               variant="outlined"
             />
             <TextField
-              sx={{ paddingBottom: '1em' }}
+              sx={{ paddingRight: '1em' }}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -58,7 +56,7 @@ const CustomerListToolbar = (props) => (
               variant="outlined"
             />
             <TextField
-              sx={{ paddingBottom: '1em' }}
+              sx={{ paddingRight: '1em' }}
               fullWidth
               InputProps={{
                 startAdornment: (
@@ -72,9 +70,8 @@ const CustomerListToolbar = (props) => (
               placeholder="Telephone"
               variant="outlined"
             />
-
             <TextField
-              sx={{ paddingBottom: '1em' }}
+              sx={{ paddingRight: '1em' }}
               fullWidth
               InputProps={{
                 startAdornment: (
