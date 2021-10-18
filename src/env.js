@@ -3,7 +3,7 @@ const env = () => {
     return 'https://yaz-fr.com/api.yaz-fr.com/';
   }
 
-  if (window.location.hostname === 'iraqidev.net') {
+  if (window.location.hostname === 'prod-ab-dashboard.netlify.app') {
     return 'https://api.yaz-fr.com/';
   }
   return '';
