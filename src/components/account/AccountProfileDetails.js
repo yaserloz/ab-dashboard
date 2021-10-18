@@ -29,9 +29,9 @@ const states = [
 const AccountProfileDetails = (props) => {
   const user = useSelector((state) => state.auth.user)
   const [values, setValues] = useState({
-    firstName: user.data.firstname,
-    lastName: user.data.lastname,
-    email: user.data.email,
+    firstName: user.firstname,
+    lastName: user.lastname,
+    email: user.email,
     phone: '',
     state: 'Alabama',
     country: 'USA'

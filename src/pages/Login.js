@@ -64,8 +64,8 @@ const Login = () => {
                   grantType: 'token'
                 })
                 .then((response) => {
-                  dispatch(addToken(response.data.token));
-                  dispatch(addUser(jwt(response.data.token)));
+                  const user = jwt(response.data.token);
+                  dispatch(addUser(user.data));
                   navigate('/app/dashboard', { replace: true });
                 });
               setSubmitting(false);
