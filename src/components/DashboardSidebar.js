@@ -97,7 +97,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           color="textPrimary"
           variant="h5"
         >
-          {user && user.data.firstname+ " " + user.data.lastname}
+          {user && user.firstname+ " " + user.lastname}
         </Typography>
 
       </Box>

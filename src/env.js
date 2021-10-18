@@ -1,12 +1,11 @@
 const env = () => {
-  if (process.env.NODE_ENV === 'development') {
+  if (window.location.hostname === 'dev-ab-dashboard.netlify.app' || process.env.NODE_ENV === 'development' ) {
     return 'https://yaz-fr.com/api.yaz-fr.com/';
   }
 
-  if (process.env.NODE_ENV === 'production') {
+  if (window.location.hostname === 'iraqidev.net') {
     return 'https://api.yaz-fr.com/';
   }
   return '';
 };
-
 export default env;

@@ -1,13 +1,14 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware} from '@reduxjs/toolkit';
 import reducer from './reducer';
-import ReduxThunk from 'redux-thunk'; // no changes here 😀
+import api from './middlewares/api'
 import {createStateSyncMiddleware, initMessageListener} from "redux-state-sync";
+import thunk from 'redux-thunk';
 
 const store = configureStore({
     reducer,
-    middleware:[ReduxThunk, createStateSyncMiddleware({})]
+    middleware: (getDefaultMiddleware) => {
+      return [api ,...getDefaultMiddleware()]}
   });
 
-initMessageListener(store);
 
 export default store
