@@ -34,6 +34,8 @@ export const addUser = (user) => ({type:userAdded.type, payload:{user}})
 
 export const logoutUser = () => ({type:logout.type})
 
+
+
 export const tokenAndRefreshTokenIsSet = createSelector(
     state => state.auth.token,
     state => state.auth.refreshToken,

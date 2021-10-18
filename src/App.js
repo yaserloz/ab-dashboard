@@ -7,14 +7,17 @@ import theme from 'src/theme';
 import routes from 'src/routes';
 import axios from 'axios';
 import env from './env';
-import Notification from './components/notification/Munotification'
-import {showNotification} from './store/notification'
+import Notification from './components/notification/Munotification';
+import { showNotification } from './store/notification';
+import { addUser } from './store/auth';
 import store from './store/store';
-
+import jwt from 'jwt-decode'; // import dependency
+import { useNavigate } from 'react-router-dom';
 
 axios.defaults.baseURL = env();
 axios.defaults.withCredentials = true;
 axios.defaults.credentials = true;
+
 
 
 axios.interceptors.request.use(
@@ -34,13 +37,27 @@ axios.interceptors.response.use(
   },
   (error) => {
     const originalRequest = error.config;
-    
-    if(error.response && error.response.data && error.response.data.error && error.response.data.code  == "1090" ){
-      store.dispatch(showNotification({type:'error', message:error.response.data.Explination, show:true}))
+
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.error &&
+      error.response.data.code == '1090'
+    ) {
+      store.dispatch(
+        showNotification({
+          type: 'error',
+          message: error.response.data.Explination,
+          show: true
+        })
+      );
     }
 
     if (error.response.status === 400 && originalRequest.url === 'token') {
-      alert(error.response.data.Explination);
+      store.dispatch(
+        showNotification({ type: 'error', message: 'Please login', show: true })
+      );
+
       return Promise.reject(error);
     }
 
@@ -57,18 +74,29 @@ axios.interceptors.response.use(
           return axios(originalRequest);
         });
     }
-
   }
 );
 
-
 const App = () => {
-
   const routing = useRoutes(routes);
+
+  const navigate = useNavigate();
+
+  if (!store.getState().auth.user) {
+    axios
+      .post('token', {
+        grantType: 'refresh_token',
+        app: 'ab'
+      })
+      .then((res) => {
+        const user = jwt(res.data.token);
+        store.dispatch(addUser(user.data));
+      });
+  }
 
   return (
     <ThemeProvider theme={theme}>
-      <Notification/>
+      <Notification />
       <GlobalStyles />
       {routing}
     </ThemeProvider>
