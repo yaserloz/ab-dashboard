@@ -2,11 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     Button,
-    Card,
-    CardContent,
-    TextField,
-    InputAdornment,
-    SvgIcon
   } from '@material-ui/core';
   import Drawer from '../Drawer/Drawer';
 import SelectSellingPointForm from './SelectSellingPointForm';

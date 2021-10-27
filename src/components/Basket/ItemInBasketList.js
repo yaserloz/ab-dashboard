@@ -1,11 +1,6 @@
 import { useEffect } from 'react';
-import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProductInBasketForCurentUser } from '../../store/backet';
-import Drawer from '../Drawer/Drawer';
-import { showBacket } from '../../store/backet';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,7 +11,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { makeStyles } from '@material-ui/core';
 import { deleteProductFromBasket } from '../../store/backet';
-import Divider from '@mui/material/Divider';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +27,6 @@ function ccyFormat(num) {
 }
 
 function priceRow(qty, unit) {
-  console.log(qty, unit);
   return qty * unit;
 }
 
@@ -77,15 +70,12 @@ export default function ItemInBasketList() {
   return (
     <>
       {productsInBasket && productsInBasket.length ? (
+        <>
+        <h3 style={{textAlign: 'center', marginBottom:"2em"}}>Products in basket</h3>
         <TableContainer sx={{ width: '100% !important' }} component={Paper}>
           <Table aria-label="spanning table">
             <TableHead>
-              <TableRow>
-                <TableCell align="center" colSpan={3}>
-                  Details
-                </TableCell>
-                <TableCell align="right">Price</TableCell>
-              </TableRow>
+
               <TableRow>
                 <TableCell>Title</TableCell>
                 <TableCell align="right">Count</TableCell>
@@ -119,6 +109,7 @@ export default function ItemInBasketList() {
             </TableBody>
           </Table>
         </TableContainer>
+        </>
       ) : (
         <div
           style={{
