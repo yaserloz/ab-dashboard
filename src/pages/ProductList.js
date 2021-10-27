@@ -7,7 +7,7 @@ import { addProducts } from '../store/products';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import DialogResponsive from '../components/muDialog/DialogResponsive';
-import {addingProducts} from '../store/backet'
+import { addingProducts } from '../store/backet';
 import {
   Button,
   Card,
@@ -16,31 +16,42 @@ import {
   InputAdornment,
   SvgIcon
 } from '@material-ui/core';
- 
 
 const ProductList = () => {
+
   const dispatch = useDispatch();
+
   const products = useSelector((state) => state.products.products);
+  
+  const user = useSelector((state) => state.auth.user);
+  const selectedSellingPoint = useSelector(
+    (state) => state.sellingPoint.selectedSellingPoint
+  );
   const [sellingPoints, setSellingPoint] = useState([]);
-  const [selectedSellingPoint, setSelectedSellingPoint] = useState(null);
-  const [selectedProductToAddToBascket, setSelectedProductToAddToBascket] =
-    useState(null);
+
+  // const [selectedSellingPoint, setSelectedSellingPoint] = useState(null);
+
+  const [selectedProductToAddToBascket, setSelectedProductToAddToBascket] = useState(null);
+
   const [selectedProductCountValue, setSelectedProductCountValue] = useState(null);
 
   const emptyProductSelection = () => {
     setSelectedProductToAddToBascket(null);
     setSelectedProductCountValue(null);
-  }
+  };
+
   useEffect(() => {
     if (selectedSellingPoint) {
       getProducts();
     }
   }, [selectedSellingPoint]);
+
   const getSellingPoints = () => {
     axios.get('selling-points').then((response) => {
       setSellingPoint(response.data);
     });
   };
+
   if (!sellingPoints.length) {
     getSellingPoints();
   }
@@ -53,7 +64,7 @@ const ProductList = () => {
     let query = 'products';
 
     if (selectedSellingPoint) {
-      query = query + '?selling-point=' + selectedSellingPoint;
+      query = query + '?selling-point=' + selectedSellingPoint.id;
     }
     axios.get(query).then((response) => {
       dispatch(addProducts(response.data));
@@ -61,39 +72,35 @@ const ProductList = () => {
   };
 
   const handleChange = (event) => {
-    setSelectedSellingPoint(event.target.value);
+    //setSelectedSellingPoint(event.target.value);
   };
 
   const closeAddProductToBasketDialog = () => {
     emptyProductSelection();
   };
 
-  const selectedProductCountValueHandler = event =>{
-    setSelectedProductCountValue(event.target.value)
-  }
+  const selectedProductCountValueHandler = (event) => {
+    setSelectedProductCountValue(event.target.value);
+  };
 
   const PresistProductToBascketHandler = () => {
-    if(!selectedProductCountValue || selectedProductCountValue == ""){
+    if (!selectedProductCountValue || selectedProductCountValue == '') {
       alert('You should enter a value');
       return false;
     }
-    console.log("selectedSellingPoint",selectedSellingPoint);
 
-    dispatch(addingProducts({
-      id:selectedProductToAddToBascket.id,
-      user:2,
-      sellingPoint:selectedSellingPoint,
-      count:selectedProductCountValue,
-      price:selectedProductToAddToBascket.price
-    }));
+    dispatch(
+      addingProducts({
+        id: selectedProductToAddToBascket.id,
+        user: user.id,
+        sellingPoint: selectedSellingPoint.id,
+        count: selectedProductCountValue,
+        price: selectedProductToAddToBascket.price
+      })
+    );
 
-    //Do presiste operation 
     emptyProductSelection();
   };
-
-
-
-
 
   return (
     <>
