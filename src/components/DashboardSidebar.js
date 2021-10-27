@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-
+import SellingPoint from '../components/SellingPoint/SellingPoint'
 import {
   Avatar,
   Box,
@@ -47,6 +47,16 @@ const items = [
     title: 'Products'
   },
   {
+    href: '/app/orders',
+    icon: ShoppingBagIcon,
+    title: 'Orders'
+  },
+  {
+    href: '/app/purchase-order',
+    icon: ShoppingBagIcon,
+    title: 'Purchase orders'
+  },
+  {
     href: '/app/account',
     icon: UserIcon,
     title: 'Account'
@@ -83,16 +93,6 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           p: 2
         }}
       >
-        {/* <Avatar
-          component={RouterLink}
-          src={user.avatar}
-          sx={{
-            cursor: 'pointer',
-            width: 64,
-            height: 64
-          }}
-          to="/app/account"
-        /> */}
         <Typography
           color="textPrimary"
           variant="h5"
@@ -115,7 +115,8 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         </List>
       </Box>
       <Box sx={{ flexGrow: 1 }} />
-
+      <Divider />
+      <SellingPoint />
     </Box>
   );
 

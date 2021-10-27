@@ -1,0 +1,2 @@
+export const setSellingPointToLocalStorage = sellingPoint => localStorage.setItem("selectedSellingPoints", JSON.stringify(sellingPoint))
+export const getSellingPointToLocalStorage = () => JSON.parse(localStorage.getItem("selectedSellingPoints"))

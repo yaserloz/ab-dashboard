@@ -5,17 +5,22 @@ import {showNotification} from './notification'
 const slice = createSlice({
   name: 'backet',
   initialState:{
-    products:[]
+    products:[],
+    show: false
   },
   reducers: {
     productAddedToBasket: (backet, action) => {
-      console.log(action.payload)
       backet.products = action.payload;
+    },
+    backetShowed: (backet, action) => {
+      backet.show = true;
     },
   }
 });
 
-export const  { productAddedToBasket } = slice.actions;
+export const  { productAddedToBasket, backetShowed } = slice.actions;
+
+export const showBacket = () => ({type:backetShowed.type})
 
 export const addingProducts = (product) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
@@ -31,9 +36,27 @@ export const addingProducts = (product) => (dispatch, getState) => {
   }))
 }
 
-export const getProductInBasketForCurentUser = (som) => (dispatch, getState) => {
+export const deleteProductFromBasket = (product) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
-      url:'/backet/2',
+      url:'/backet',
+      method:'delete',
+      data:product,
+      onStart:null,
+      onError:() => showNotification({type:'error', message:"Oops! couldn't delete product from basket", show:true}),
+      onSuccess:() => showNotification({type:'success', message:"Done!", show:true}),
+      dipatchNext:null,
+      callback:() => getProductInBasketForCurentUser(),
+      onFinal:showNotification({type:null, message:null, show:false}),
+  }))
+}
+
+
+export const getProductInBasketForCurentUser = () => (dispatch, getState) => {
+  if(!getState().auth.user){
+    return;
+  }
+  dispatch(actions.apiCallBegan({
+      url:'/backet/'+getState().auth.user.id,
       method:'get',
       onStart:null,
       onError:() => showNotification({type:'error', message:"Oops! couldn't fetch product in basket", show:true}),

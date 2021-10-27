@@ -13,15 +13,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import Logo from './Logo';
-import Basket from "./Basket/Basket"
+import Basket from './Basket/Basket';
 const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
   const [notifications] = useState([]);
 
   return (
-    <AppBar
-      elevation={0}
-      {...rest}
-    >
+    <AppBar elevation={0} {...rest}>
       <Toolbar>
         <RouterLink to="/">
           <Logo />
@@ -29,18 +26,14 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
         <Box sx={{ flexGrow: 1 }} />
         <Hidden lgDown>
           <IconButton color="inherit">
-
-              <Basket />
+            <Basket />
           </IconButton>
           <IconButton color="inherit">
             <InputIcon />
           </IconButton>
         </Hidden>
         <Hidden lgUp>
-          <IconButton
-            color="inherit"
-            onClick={onMobileNavOpen}
-          >
+          <IconButton color="inherit" onClick={onMobileNavOpen}>
             <MenuIcon />
           </IconButton>
         </Hidden>

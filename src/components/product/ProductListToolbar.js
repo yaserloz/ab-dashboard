@@ -32,7 +32,7 @@ const ProductListToolbar = (props) => {
     <Box sx={{ mt: 3 }}>
       <Card>
         <CardContent>
-          <Box sx={{ maxWidth: 500, paddingBottom:"1em" }}>
+          {/* <Box sx={{ maxWidth: 500, paddingBottom:"1em" }}>
             <TextField
               fullWidth
               InputProps={{
@@ -47,8 +47,8 @@ const ProductListToolbar = (props) => {
               placeholder="Search product"
               variant="outlined"
             />
-          </Box>
-          <Box sx={{ maxWidth: 500 }}>
+          </Box> */}
+          {/* <Box sx={{ maxWidth: 500 }}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Age</InputLabel>
               <Select
@@ -64,7 +64,7 @@ const ProductListToolbar = (props) => {
                 
               </Select>
             </FormControl>
-          </Box>
+          </Box> */}
         </CardContent>
       </Card>
     </Box>
