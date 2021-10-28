@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProductInBasketForCurentUser } from '../../store/backet';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,7 +11,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { makeStyles } from '@material-ui/core';
-import { deleteProductFromBasket } from '../../store/backet';
+import {
+  deleteProductFromBasket,
+  updateProductUnitPriceInBasket
+} from '../../store/backet';
+import TextInput from '../Form/TextInput';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,48 +72,78 @@ export default function ItemInBasketList() {
     dispatch(deleteProductFromBasket(product));
   };
 
+  const onPricChangeHandler = (index) => (event) => {
+    // console.log(event.target.value);
+    // const productCopy = {...product};
+    // productCopy.price = event.target.value
+    // productCopy.toSave = true;
+    // console.log(index);
+    const newPrice = event.target.value;
+    dispatch(updateProductUnitPriceInBasket(index, newPrice));
+  };
+
   return (
     <>
       {productsInBasket && productsInBasket.length ? (
         <>
-        <h3 style={{textAlign: 'center', marginBottom:"2em"}}>Products in basket</h3>
-        <TableContainer sx={{ width: '100% !important' }} component={Paper}>
-          <Table aria-label="spanning table">
-            <TableHead>
+          <h3 style={{ textAlign: 'center', marginBottom: '2em' }}>
+            Products in basket
+          </h3>
+          <TableContainer sx={{ width: '100% !important' }} component={Paper}>
+            <Table aria-label="spanning table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Title</TableCell>
+                  <TableCell align="right">Count</TableCell>
+                  <TableCell align="right">Unit price</TableCell>
+                  <TableCell align="right">Sum</TableCell>
+                  <TableCell align="right">Delete</TableCell>
+                  <TableCell align="right">Save</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {productsInBasket &&
+                  productsInBasket.map((product, index) => (
+                    <TableRow key={product.id}>
+                      <TableCell>{product.title}</TableCell>
+                      <TableCell align="right">
+                        <TextInput
+                          sx={{ padding: '0px' }}
+                          value={product.count}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <TextInput
+                          onChange={onPricChangeHandler(index)}
+                          value={product.price}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        {priceRow(product.count, product.price)}
+                      </TableCell>
+                      <TableCell align="right">
+                        <DeleteIcon
+                          onClick={deleteProductFromBasketHandler(product)}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        {product.toSave ? (
+                          <SaveIcon
+                            // onClick={updateProductInBasketInDatabase(product)}
+                          />
+                        ) : null}
+                      </TableCell>
+                    </TableRow>
+                  ))}
 
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell align="right">Count</TableCell>
-                <TableCell align="right">Unit price</TableCell>
-                <TableCell align="right">Sum</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {productsInBasket &&
-                productsInBasket.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>{product.title}</TableCell>
-                    <TableCell align="right">{product.count}</TableCell>
-                    <TableCell align="right">{product.price}</TableCell>
-                    <TableCell align="right">
-                      {priceRow(product.count, product.price)}
-                    </TableCell>
-                    <TableCell align="right">
-                      <DeleteIcon
-                        onClick={deleteProductFromBasketHandler(product)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-
-              <TableRow>
-                <TableCell rowSpan={3} />
-                <TableCell colSpan={2}>Total</TableCell>
-                <TableCell align="right">Total</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+                <TableRow>
+                  <TableCell rowSpan={3} />
+                  <TableCell colSpan={2}>Total</TableCell>
+                  <TableCell align="right">Total</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       ) : (
         <div

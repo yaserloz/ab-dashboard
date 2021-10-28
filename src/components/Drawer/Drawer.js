@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({
   root: {
     "& .MuiPaper-root": {
-     width:'50%'
+     width:'80%'
     }
   }
 }));

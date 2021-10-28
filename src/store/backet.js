@@ -15,12 +15,18 @@ const slice = createSlice({
     backetShowed: (backet, action) => {
       backet.show = true;
     },
+    productUnitPriceChanged: (backet, action) => {
+      backet.products[action.payload.index].price  =  action.payload.newPrice;
+      backet.products[action.payload.index].toSave = true;
+    },
   }
 });
 
-export const  { productAddedToBasket, backetShowed } = slice.actions;
+export const  { productAddedToBasket, backetShowed, productUnitPriceChanged } = slice.actions;
 
 export const showBacket = () => ({type:backetShowed.type})
+
+export const updateProductUnitPriceInBasket = (index, newPrice) => ({type:productUnitPriceChanged.type, payload:{index, newPrice}})
 
 export const addingProducts = (product) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
