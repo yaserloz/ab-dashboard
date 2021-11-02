@@ -13,9 +13,19 @@ import Paper from '@mui/material/Paper';
 import { makeStyles } from '@material-ui/core';
 import {
   deleteProductFromBasket,
-  updateProductUnitPriceInBasket
+  updateProductUnitPriceInBasket,
+  updateProductCountInBasket,
+  updateBacketItemInDatabase
 } from '../../store/backet';
 import TextInput from '../Form/TextInput';
+import {
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  InputAdornment,
+  SvgIcon
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,6 +73,7 @@ export default function ItemInBasketList() {
 
   const productsInBasket = useSelector((state) => state.backet.products);
   const user = useSelector((state) => state.auth.user);
+  const currentSellingOrder = useSelector((state) => state.sellingOrder.currentSellingOrder);
 
   useEffect(() => {
     dispatch(getProductInBasketForCurentUser());
@@ -81,10 +92,21 @@ export default function ItemInBasketList() {
     const newPrice = event.target.value;
     dispatch(updateProductUnitPriceInBasket(index, newPrice));
   };
+  
+  const onCountChangeHandler = (index) => (event) => {
+    const newCount = event.target.value;
+    dispatch(updateProductCountInBasket(index, newCount));
+  };
+
+  const updateBacketItem = product => event => {
+    dispatch(updateBacketItemInDatabase(product))
+  }
+
+
 
   return (
     <>
-      {productsInBasket && productsInBasket.length ? (
+      {currentSellingOrder && currentSellingOrder.orderLines && currentSellingOrder.orderLines.length ? (
         <>
           <h3 style={{ textAlign: 'center', marginBottom: '2em' }}>
             Products in basket
@@ -102,24 +124,25 @@ export default function ItemInBasketList() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {productsInBasket &&
-                  productsInBasket.map((product, index) => (
+                {currentSellingOrder.orderLines.map((product, index) => (
                     <TableRow key={product.id}>
                       <TableCell>{product.title}</TableCell>
                       <TableCell align="right">
                         <TextInput
                           sx={{ padding: '0px' }}
-                          value={product.count}
+                          value={product.one_product_count}
+                          onChange={onCountChangeHandler(index)}
+
                         />
                       </TableCell>
                       <TableCell align="right">
                         <TextInput
                           onChange={onPricChangeHandler(index)}
-                          value={product.price}
+                          value={product.one_product_total}
                         />
                       </TableCell>
                       <TableCell align="right">
-                        {priceRow(product.count, product.price)}
+                        {product.one_product_price}
                       </TableCell>
                       <TableCell align="right">
                         <DeleteIcon
@@ -129,7 +152,7 @@ export default function ItemInBasketList() {
                       <TableCell align="right">
                         {product.toSave ? (
                           <SaveIcon
-                            // onClick={updateProductInBasketInDatabase(product)}
+                            onClick={updateBacketItem(product)}
                           />
                         ) : null}
                       </TableCell>

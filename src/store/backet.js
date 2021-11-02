@@ -19,14 +19,20 @@ const slice = createSlice({
       backet.products[action.payload.index].price  =  action.payload.newPrice;
       backet.products[action.payload.index].toSave = true;
     },
+    productCountChanged: (backet, action) => {
+      backet.products[action.payload.index].count  =  action.payload.newCount;
+      backet.products[action.payload.index].toSave = true;
+    },
   }
 });
 
-export const  { productAddedToBasket, backetShowed, productUnitPriceChanged } = slice.actions;
+export const  { productAddedToBasket, backetShowed, productUnitPriceChanged, productCountChanged } = slice.actions;
 
 export const showBacket = () => ({type:backetShowed.type})
 
 export const updateProductUnitPriceInBasket = (index, newPrice) => ({type:productUnitPriceChanged.type, payload:{index, newPrice}})
+
+export const updateProductCountInBasket = (index, newCount) => ({type:productCountChanged.type, payload:{index, newCount}})
 
 export const addingProducts = (product) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
@@ -41,7 +47,6 @@ export const addingProducts = (product) => (dispatch, getState) => {
       onFinal:showNotification({type:null, message:null, show:false}),
   }))
 }
-
 export const deleteProductFromBasket = (product) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
       url:'/backet',
@@ -55,8 +60,19 @@ export const deleteProductFromBasket = (product) => (dispatch, getState) => {
       onFinal:showNotification({type:null, message:null, show:false}),
   }))
 }
-
-
+export const updateBacketItemInDatabase = (product) => (dispatch, getState) => {
+  dispatch(actions.apiCallBegan({
+      url:'/backet',
+      method:'post',
+      data:product,
+      onStart:null,
+      onError:() => showNotification({type:'error', message:"Oops! couldn't update product", show:true}),
+      onSuccess:() => showNotification({type:'success', message:"Done!", show:true}),
+      dipatchNext:null,
+      callback:() => getProductInBasketForCurentUser(),
+      onFinal:showNotification({type:null, message:null, show:false}),
+  }))
+}
 export const getProductInBasketForCurentUser = () => (dispatch, getState) => {
   if(!getState().auth.user){
     return;

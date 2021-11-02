@@ -44,7 +44,7 @@ const api =
         }
 
         if (callback) {
-          dispatch(callback());
+          dispatch(callback(response.data));
         }
 
         if (dipatchNext) {
