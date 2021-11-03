@@ -16,24 +16,26 @@ import {
   InputAdornment,
   SvgIcon
 } from '@material-ui/core';
+import { showNotification } from '../store/notification';
 
+import AddProductToOrder from '../components/product/AddProductToOrder';
 const ProductList = () => {
-
   const dispatch = useDispatch();
 
   const products = useSelector((state) => state.products.products);
-  
+
   const user = useSelector((state) => state.auth.user);
   const selectedSellingPoint = useSelector(
     (state) => state.sellingPoint.selectedSellingPoint
   );
   const [sellingPoints, setSellingPoint] = useState([]);
 
-  // const [selectedSellingPoint, setSelectedSellingPoint] = useState(null);
 
-  const [selectedProductToAddToBascket, setSelectedProductToAddToBascket] = useState(null);
+  const [selectedProductToAddToBascket, setSelectedProductToAddToBascket] =
+    useState(null);
 
-  const [selectedProductCountValue, setSelectedProductCountValue] = useState(null);
+  const [selectedProductCountValue, setSelectedProductCountValue] =
+    useState(null);
 
   const emptyProductSelection = () => {
     setSelectedProductToAddToBascket(null);
@@ -45,16 +47,6 @@ const ProductList = () => {
       getProducts();
     }
   }, [selectedSellingPoint]);
-
-  const getSellingPoints = () => {
-    axios.get('selling-points').then((response) => {
-      setSellingPoint(response.data);
-    });
-  };
-
-  if (!sellingPoints.length) {
-    getSellingPoints();
-  }
 
   const addProductToBasketHandler = (product) => (event) => {
     setSelectedProductToAddToBascket(product);
@@ -84,16 +76,11 @@ const ProductList = () => {
   };
 
   const PresistProductToBascketHandler = () => {
-    if (!selectedProductCountValue || selectedProductCountValue == '') {
-      alert('You should enter a value');
-      return false;
-    }
-
     dispatch(
       addingProducts({
-        id: selectedProductToAddToBascket.id,
+        product: selectedProductToAddToBascket.id,
         user: user.id,
-        sellingPoint: selectedSellingPoint.id,
+        selling_point: selectedSellingPoint.id,
         count: selectedProductCountValue,
         price: selectedProductToAddToBascket.price
       })
@@ -105,18 +92,12 @@ const ProductList = () => {
   return (
     <>
       {selectedProductToAddToBascket ? (
-        <DialogResponsive
-          onPresistProductToBacket={PresistProductToBascketHandler}
-          onCloseDialogHandler={closeAddProductToBasketDialog}
-          product={selectedProductToAddToBascket}
-        >
-          <TextField
-            sx={{ paddingRight: '1em' }}
-            fullWidth
-            variant="outlined"
-            onChange={selectedProductCountValueHandler}
+          <AddProductToOrder
+            onCloseDialogHandler={closeAddProductToBasketDialog}
+            product={selectedProductToAddToBascket}
+
+            selectedProduct={selectedProductToAddToBascket}
           />
-        </DialogResponsive>
       ) : null}
       <Helmet>
         <title>Products | Material Kit</title>

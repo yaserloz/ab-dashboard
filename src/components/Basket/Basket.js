@@ -14,6 +14,7 @@ import {
   getSelectedCustomerToLocalStorage,
   deletedSelectedCustomerToLocalStorage
 } from '../../localStorage/Customer';
+
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,6 +23,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import { updateSellingOrder } from '../../store/sellingOrder';
+import { createNewSellingOrder } from '../../store/sellingOrder';
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
@@ -50,6 +53,15 @@ export default function Basket() {
   const backetIsShowedBacket = useSelector((state) => state.backet.show);
   const productsInBasket = useSelector((state) => state.backet.products);
   const user = useSelector((state) => state.auth.user);
+  const sellingOrder = useSelector((state) => state.sellingOrder);
+  const sellingPoint = useSelector((state) => state.sellingPoint);
+
+  const orderInfo = useSelector(
+    (state) =>
+      state.sellingOrder.currentSellingOrder &&
+      state.sellingOrder.currentSellingOrder.orderInfo
+  );
+
 
   const [client, setClient] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(
@@ -72,14 +84,28 @@ export default function Basket() {
     setOpenSelectCustomerDialog(true);
   };
 
-  const userSelectHandler = (item) => {
-    setSelectedCustomer(item);
-    setSelectedCustomerToLocalStorage(item);
+  const userSelectHandler = (client) => {
+    dispatch(
+      updateSellingOrder({
+        id: sellingOrder.currentSellingOrder.orderInfo.id,
+        created_for_id: client.id
+      })
+    );
+
     setOpenSelectCustomerDialog(false);
   };
   const removeSelectedCustomer = () => {
     setSelectedCustomer(null);
     deletedSelectedCustomerToLocalStorage();
+  };
+
+  const createOrderHandler = () => {
+    dispatch(
+      createNewSellingOrder({
+        selling_point: sellingPoint.selectedSellingPoint.id,
+        created_by: user.id
+      })
+    );
   };
 
   return (
@@ -89,20 +115,21 @@ export default function Basket() {
       )}
       <Drawer show={backetIsShowedBacket}>
         <>
-          {!selectedCustomer ? (
-            <Button onClick={openSelectDialogFormHandler}>
-              Select Customer
-            </Button>
-          ) : (
+          <Button onClick={createOrderHandler}>Create Order</Button>
+          <Button onClick={openSelectDialogFormHandler}>
+            Update order Client
+          </Button>
+
+          {orderInfo && (
             <>
-              <Button onClick={removeSelectedCustomer}>
-                Remove selected Customer
-              </Button>
-              <TableContainer sx={{ minWidth: '100% !important' }} component={Paper}>
-                <Table  aria-label="simple table">
+              <TableContainer
+                sx={{ minWidth: '100% !important' }}
+                component={Paper}
+              >
+                <Table aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      <TableCell align="right">ID</TableCell>
+                      <TableCell align="right">ORDER ID</TableCell>
                       <TableCell align="right">FIRST NAME</TableCell>
                       <TableCell align="right">LAST NAME</TableCell>
                       <TableCell align="right">TELEPHONE</TableCell>
@@ -112,25 +139,20 @@ export default function Basket() {
                     <TableRow
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                      <TableCell align="right">{selectedCustomer.id}</TableCell>
+                      <TableCell align="right">{orderInfo.id}</TableCell>
                       <TableCell align="right">
-                        {selectedCustomer.first_name}
+                        {orderInfo.first_name}
                       </TableCell>
-                      <TableCell align="right">
-                        {selectedCustomer.last_name}
-                      </TableCell>
-                      <TableCell align="right">
-                        {selectedCustomer.telephone}
-                      </TableCell>
+                      <TableCell align="right">{orderInfo.last_name}</TableCell>
+                      <TableCell align="right">{orderInfo.telephone}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
             </>
           )}
-                    <br />
-                    <br />
-                    <br />
+
+  
 
           <hr />
           <br />
@@ -146,8 +168,8 @@ export default function Basket() {
       >
         <Badge
           badgeContent={
-            productsInBasket && productsInBasket.length
-              ? productsInBasket.length
+            sellingOrder.currentSellingOrder.orderLines && sellingOrder.currentSellingOrder.orderLines.length
+              ? sellingOrder.currentSellingOrder.orderLines.length
               : 0
           }
           color="secondary"

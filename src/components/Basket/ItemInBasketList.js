@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProductInBasketForCurentUser } from '../../store/backet';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,7 +11,21 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { makeStyles } from '@material-ui/core';
-import { deleteProductFromBasket } from '../../store/backet';
+import {
+  deleteProductFromBasket,
+  updateProductUnitPriceInBasket,
+  updateProductCountInBasket,
+  updateBacketItemInDatabase
+} from '../../store/backet';
+import TextInput from '../Form/TextInput';
+import {
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  InputAdornment,
+  SvgIcon
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,6 +73,7 @@ export default function ItemInBasketList() {
 
   const productsInBasket = useSelector((state) => state.backet.products);
   const user = useSelector((state) => state.auth.user);
+  const currentSellingOrder = useSelector((state) => state.sellingOrder.currentSellingOrder);
 
   useEffect(() => {
     dispatch(getProductInBasketForCurentUser());
@@ -67,48 +83,90 @@ export default function ItemInBasketList() {
     dispatch(deleteProductFromBasket(product));
   };
 
+  const onPricChangeHandler = (index) => (event) => {
+    // console.log(event.target.value);
+    // const productCopy = {...product};
+    // productCopy.price = event.target.value
+    // productCopy.toSave = true;
+    // console.log(index);
+    const newPrice = event.target.value;
+    dispatch(updateProductUnitPriceInBasket(index, newPrice));
+  };
+  
+  const onCountChangeHandler = (index) => (event) => {
+    const newCount = event.target.value;
+    dispatch(updateProductCountInBasket(index, newCount));
+  };
+
+  const updateBacketItem = product => event => {
+    dispatch(updateBacketItemInDatabase(product))
+  }
+
+
+
   return (
     <>
-      {productsInBasket && productsInBasket.length ? (
+      {currentSellingOrder && currentSellingOrder.orderLines && currentSellingOrder.orderLines.length ? (
         <>
-        <h3 style={{textAlign: 'center', marginBottom:"2em"}}>Products in basket</h3>
-        <TableContainer sx={{ width: '100% !important' }} component={Paper}>
-          <Table aria-label="spanning table">
-            <TableHead>
+          <h3 style={{ textAlign: 'center', marginBottom: '2em' }}>
+            Products in basket
+          </h3>
+          <TableContainer sx={{ width: '100% !important' }} component={Paper}>
+            <Table aria-label="spanning table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Title</TableCell>
+                  <TableCell align="right">Count</TableCell>
+                  <TableCell align="right">Unit price</TableCell>
+                  <TableCell align="right">Sum</TableCell>
+                  <TableCell align="right">Delete</TableCell>
+                  <TableCell align="right">Save</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentSellingOrder.orderLines.map((product, index) => (
+                    <TableRow key={product.id}>
+                      <TableCell>{product.title}</TableCell>
+                      <TableCell align="right">
+                        <TextInput
+                          sx={{ padding: '0px' }}
+                          value={product.one_product_count}
+                          onChange={onCountChangeHandler(index)}
 
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell align="right">Count</TableCell>
-                <TableCell align="right">Unit price</TableCell>
-                <TableCell align="right">Sum</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {productsInBasket &&
-                productsInBasket.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>{product.title}</TableCell>
-                    <TableCell align="right">{product.count}</TableCell>
-                    <TableCell align="right">{product.price}</TableCell>
-                    <TableCell align="right">
-                      {priceRow(product.count, product.price)}
-                    </TableCell>
-                    <TableCell align="right">
-                      <DeleteIcon
-                        onClick={deleteProductFromBasketHandler(product)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <TextInput
+                          onChange={onPricChangeHandler(index)}
+                          value={product.one_product_total}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        {product.one_product_price}
+                      </TableCell>
+                      <TableCell align="right">
+                        <DeleteIcon
+                          onClick={deleteProductFromBasketHandler(product)}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        {product.toSave ? (
+                          <SaveIcon
+                            onClick={updateBacketItem(product)}
+                          />
+                        ) : null}
+                      </TableCell>
+                    </TableRow>
+                  ))}
 
-              <TableRow>
-                <TableCell rowSpan={3} />
-                <TableCell colSpan={2}>Total</TableCell>
-                <TableCell align="right">Total</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+                <TableRow>
+                  <TableCell rowSpan={3} />
+                  <TableCell colSpan={2}>Total</TableCell>
+                  <TableCell align="right">Total</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       ) : (
         <div

@@ -1,0 +1,2 @@
+export const setSellingOrderToLocalStorage = sellingPoint => localStorage.setItem("selectedSellingPoints", JSON.stringify(sellingPoint))
+export const getSellingOrderFromLocalStorage = () => JSON.parse(localStorage.getItem("selectedSellingPoints"))
