@@ -168,7 +168,7 @@ export default function Basket() {
       >
         <Badge
           badgeContent={
-            sellingOrder.currentSellingOrder.orderLines && sellingOrder.currentSellingOrder.orderLines.length
+            sellingOrder.currentSellingOrder &&  sellingOrder.currentSellingOrder.orderLines && sellingOrder.currentSellingOrder.orderLines.length
               ? sellingOrder.currentSellingOrder.orderLines.length
               : 0
           }
