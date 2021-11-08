@@ -9,7 +9,7 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector} from 'react-redux';
 
 const states = [
   {

@@ -8,11 +8,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useTheme } from '@mui/material/styles';
-import {showNotification} from '../../store/notification'
+import { showNotification } from '../../store/notification';
 const AddProductToOrder = (props) => {
-  const theme = useTheme();
-
   const [stockinfoForProduct, setStockinfoForProduct] = React.useState([]);
   const [stockToAddToShipment, setStockToAddToShipment] = React.useState([]);
 
@@ -34,7 +31,7 @@ const AddProductToOrder = (props) => {
       setStockToAddToShipment(stockToAddToShipmentCopy);
     } else {
       let arrayTemp = stockToAddToShipmentCopy.filter(
-        (stock, stockIndex) => stock.id != object.id
+        (stock, stockIndex) => stock.id !== object.id
       );
       setStockToAddToShipment(arrayTemp);
     }
@@ -61,68 +58,78 @@ const AddProductToOrder = (props) => {
       return;
     }
 
-    const stockToAddToShipmentCopy = [...stockToAddToShipment];
-
+    const sellingOrderLine = [...stockToAddToShipment];
+    sellingOrderLine &&
+      sellingOrderLine.length &&
+      sellingOrderLine.map((line) => {
+        line.selling_order = currentSellingOrder.orderInfo.id;
+      });
     axios
-      .put('selling-order/' + currentSellingOrder.orderInfo.id + '/lines/add', {
-        ac: 'ThisIsHowIKnowYasir@ab',
-        sellingOrderLine: stockToAddToShipmentCopy
+      .put('selling-order/lines', {
+        sellingOrderLine
       })
       .then((response) => {
         setStockToAddToShipment([]);
         props.onCloseDialogHandler();
-        dispatch(showNotification({type:'success', message:"تم اضافة المنتج الى الوصل الحالي", show:true}));
+        dispatch(
+          showNotification({
+            type: 'success',
+            message: 'تم اضافة المنتج الى الوصل الحالي',
+            show: true
+          })
+        );
         dispatch(getOrderInfo(currentSellingOrder.orderInfo.id));
       })
       .catch((error) => {
-        dispatch(showNotification({type:'error', message:"هنالك مشكلة لم استطع اضافة المنتج الى الوصل الحالي", show:true}))
+        dispatch(
+          showNotification({
+            type: 'error',
+            message: 'هنالك مشكلة لم استطع اضافة المنتج الى الوصل الحالي',
+            show: true
+          })
+        );
       });
   };
   return (
-      <Dialog
-        fullScreen
-        open={props.selectedProduct ? true : false}
-        onClose={props.onCloseDialogHandler}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">
-          {`I should add how many items from the product number ${
-            props.selectedProduct ? props.selectedProduct.id : null
-          }? `}
-        </DialogTitle>
-        <DialogContent>
-          <div style={{ margin: '1em', minWidth: '800px' }}>
-
-
-            {
-              //Show product stock info in shippment
-              stockinfoForProduct && !!stockinfoForProduct.length && (
-                <ProductStockInfo
-                  onProductCheck={handleCheckboxChange}
-                  stockInfo={stockinfoForProduct}
-                />
-              )
-            }
-          </div>
-        </DialogContent>
-        <DialogActions>
+    <Dialog
+      fullScreen
+      open={props.selectedProduct ? true : false}
+      onClose={props.onCloseDialogHandler}
+      aria-labelledby="responsive-dialog-title"
+    >
+      <DialogTitle id="responsive-dialog-title">
+        {`I should add how many items from the product number ${
+          props.selectedProduct ? props.selectedProduct.id : null
+        }? `}
+      </DialogTitle>
+      <DialogContent>
+        <div style={{ margin: '1em', minWidth: '800px' }}>
+          {
+            //Show product stock info in shippment
+            stockinfoForProduct && !!stockinfoForProduct.length && (
+              <ProductStockInfo
+                onProductCheck={handleCheckboxChange}
+                stockInfo={stockinfoForProduct}
+              />
+            )
+          }
+        </div>
+      </DialogContent>
+      <DialogActions>
         {stockinfoForProduct &&
-              !!stockinfoForProduct.length &&
-              stockToAddToShipment &&
-              !!stockToAddToShipment.length && (
-                <div>
-                  Products to add to order: {stockToAddToShipment.length}
-                  <Button onClick={addProductToShipmentHandler}>
-                  Add product to current selling order
-
-                  </Button>
-                </div>
-              )}
-                  <Button onClick={props.onCloseDialogHandler}>
-                    Cancel
-                  </Button>
-        </DialogActions>
-      </Dialog>
+          !!stockinfoForProduct.length &&
+          stockToAddToShipment &&
+          !!stockToAddToShipment.length && (
+            <div>
+              Products to add to order: {stockToAddToShipment.length}
+              <Button onClick={addProductToShipmentHandler}>
+                Add product to current selling order
+              </Button>
+            </div>
+          )}
+        <Button onClick={props.onCloseDialogHandler}>Cancel</Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 export default AddProductToOrder;
