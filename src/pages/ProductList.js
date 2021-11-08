@@ -47,27 +47,9 @@ const ProductList = () => {
     });
   };
 
-
-
   const closeAddProductToBasketDialog = () => {
     emptyProductSelection();
   };
-
-
-
-  // const PresistProductToBascketHandler = () => {
-  //   dispatch(
-  //     addingProducts({
-  //       product: selectedProductToAddToBascket.id,
-  //       user: user.id,
-  //       selling_point: selectedSellingPoint.id,
-  //       count: selectedProductCountValue,
-  //       price: selectedProductToAddToBascket.price
-  //     })
-  //   );
-
-  //   emptyProductSelection();
-  // };
 
   return (
     <>
