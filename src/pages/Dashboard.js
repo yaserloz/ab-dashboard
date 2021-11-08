@@ -10,13 +10,12 @@ import TotalProfit from 'src/components/dashboard//TotalProfit';
 import TrafficByDevice from 'src/components/dashboard//TrafficByDevice';
 import { useNavigate } from 'react-router-dom';
 import { tokenAndRefreshTokenIsSet } from '../store/auth';
-import { useSelector, useDispatch } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   if (!useSelector(tokenAndRefreshTokenIsSet)) {
-    console.log("eeee")
+    console.log('eeee');
   }
   navigate('/login', { replace: true });
 

@@ -1,4 +1,3 @@
-import 'react-perfect-scrollbar/dist/css/styles.css';
 import { useRoutes } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from 'src/components/GlobalStyles';
@@ -12,7 +11,7 @@ import { showNotification } from './store/notification';
 import { addUser } from './store/auth';
 import store from './store/store';
 import jwt from 'jwt-decode'; // import dependency
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 axios.defaults.baseURL = env();
 axios.defaults.withCredentials = true;
@@ -42,7 +41,7 @@ axios.interceptors.response.use(
       error.response &&
       error.response.data &&
       error.response.data.error &&
-      error.response.data.code == '1090'
+      error.response.data.code === '1090'
     ) {
       store.dispatch(
         showNotification({
@@ -63,7 +62,6 @@ axios.interceptors.response.use(
 
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('refres_htoken');
       return axios
         .post('token', {
           grantType: 'refresh_token',
@@ -80,7 +78,7 @@ axios.interceptors.response.use(
 const App = () => {
   const routing = useRoutes(routes);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   if (!store.getState().auth.user) {
     axios

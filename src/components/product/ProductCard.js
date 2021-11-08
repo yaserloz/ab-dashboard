@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import {
-  Avatar,
   Box,
   Card,
   CardContent,
@@ -8,7 +7,7 @@ import {
   Grid,
   Typography
 } from '@material-ui/core';
-import "./ProductCard.css"
+// import "./ProductCard.css"
 import Grid3x3Icon from '@material-ui/icons/Grid3x3';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 const ProductCard = ({ product, addTobaskerHandler, ...rest }) => {

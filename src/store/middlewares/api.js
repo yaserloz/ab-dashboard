@@ -33,24 +33,30 @@ const api =
         data
       })
       .then((response) => {
-        if (!response) {
-          throw response;
-        }
+        try {
+          if (typeof response.data !== 'object') {
+            throw 'Malformed response';
+          }
 
-        dispatch(actions.apiCallSuccess());
+          dispatch(actions.apiCallSuccess());
 
-        if (onSuccess) {
-          dispatch(onSuccess());
-        }
+          if (onSuccess) {
+            dispatch(onSuccess());
+          }
+          if (callback) {
+            dispatch(callback(response.data));
+          }
 
-        if (callback) {
-          dispatch(callback(response.data));
+          if (dipatchNext) {
+            dispatch({ type: dipatchNext, payload: response.data });
+          }
+        } catch (error) {
+          if (onError) {
+            dispatch(onError(response.data));
+          }
+          console.log('error', error);
         }
-
-        if (dipatchNext) {
-          dispatch({ type: dipatchNext, payload: response.data });
-        }
-      })
+      });
   };
 
 export default api;

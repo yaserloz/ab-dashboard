@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
 export default function DrawerC(props) {
   const classes = useStyles();
 
-  const [closeDrawer, setcloseDrawer] = React.useState(false)
+  // const [closeDrawer, setcloseDrawer] = React.useState(false)
   const drawercloseHandler = () => {
     props.closeDrawer()
   }

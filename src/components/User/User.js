@@ -17,20 +17,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CustomizedDialogs(props) {
   const classes = useStyles();
-  const [showSearchClientForm, setShowSearchClientForm] = React.useState(false);
-  const [showAddClientForm, setShowAddClientForm] = React.useState(false);
 
   const handleClose = () => {
     props.onCloseHandler(false);
-  };
-
-  const onSearchClientHandler = () => {
-    setShowSearchClientForm(true);
-    setShowAddClientForm(false);
-  };
-  const onAddClientHandler = () => {
-    setShowSearchClientForm(false);
-    setShowAddClientForm(true);
   };
 
   return (
