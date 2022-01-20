@@ -32,37 +32,37 @@ import NavItem from './NavItem';
 
 const items = [
   {
-    href: '/app/dashboard',
+    href: '/dashboard',
     icon: BarChartIcon,
     title: 'Dashboard'
   },
   {
-    href: '/app/customers',
+    href: '/customers',
     icon: UsersIcon,
     title: 'Customers'
   },
   {
-    href: '/app/products',
+    href: '/products',
     icon: ShoppingBagIcon,
     title: 'Products'
   },
   {
-    href: '/app/orders',
+    href: '/orders',
     icon: ShoppingBagIcon,
     title: 'Orders'
   },
   {
-    href: '/app/purchase-order',
+    href: '/purchase-order',
     icon: ShoppingBagIcon,
     title: 'Purchase orders'
   },
   {
-    href: '/app/account',
+    href: '/account',
     icon: UserIcon,
     title: 'Account'
   },
   {
-    href: '/app/shipments',
+    href: '/shipments',
     icon: Truck,
     title: 'Shipments'
   }
