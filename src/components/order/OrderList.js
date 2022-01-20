@@ -69,17 +69,12 @@ const OrderList = ({  ...rest }) => {
                   Name
                 </TableCell>
                 <TableCell>
-                  Email
+                  Order state
                 </TableCell>
                 <TableCell>
-                  Location
+                  Total price
                 </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  Registration date
-                </TableCell>
+
               </TableRow>
             </TableHead>
             <TableBody>
@@ -107,22 +102,17 @@ const OrderList = ({  ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {"customer.first_name"} {"customer.last_name"}
+                        {order.first_name} {order.last_name}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {"customer.email"}
+                    {order.order_state}
                   </TableCell>
                   <TableCell>
-                    {"customer.address_line"}
+                    {order.total_order_price}
                   </TableCell>
-                  <TableCell>
-                    {"customer.telephone"}
-                  </TableCell>
-                  <TableCell>
-                    {/* {moment(customer.created_at).format('DD/MM/YYYY')} */}
-                  </TableCell>
+  
                 </TableRow>
               ))}
             </TableBody>
