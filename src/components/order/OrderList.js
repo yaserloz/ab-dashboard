@@ -1,4 +1,4 @@
-import {useEffect,useState} from 'react'
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -17,35 +17,33 @@ import {
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 
-const OrderList = ({  ...rest }) => {
+const OrderList = ({ ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
-  const [orders, setOrders] = useState([])
-  const [totalOrdersCounts, setTotalOrdersCounts] = useState(0)
+  const [orders, setOrders] = useState([]);
+  const [totalOrdersCounts, setTotalOrdersCounts] = useState(0);
   useEffect(() => {
-    getOrders()
-  }, [page,limit])
+    getOrders();
+  }, [page, limit]);
 
   const getOrders = () => {
-    axios
-    .get(`selling-orders`)
-    .then((response) => {
+    axios.get(`selling-orders`).then((response) => {
       setOrders(response.data);
-      setTotalOrdersCounts(response.data['total-result-count'])
+      setTotalOrdersCounts(response.data['total-result-count']);
     });
-  }
-//   const handleSelectAll = (event) => {
-//     let newSelectedCustomerIds;
+  };
+  //   const handleSelectAll = (event) => {
+  //     let newSelectedCustomerIds;
 
-//     if (event.target.checked) {
-//       newSelectedCustomerIds = customers.map((customer) => customer.id);
-//     } else {
-//       newSelectedCustomerIds = [];
-//     }
+  //     if (event.target.checked) {
+  //       newSelectedCustomerIds = customers.map((customer) => customer.id);
+  //     } else {
+  //       newSelectedCustomerIds = [];
+  //     }
 
-//     setSelectedCustomerIds(newSelectedCustomerIds);
-//   };
+  //     setSelectedCustomerIds(newSelectedCustomerIds);
+  //   };
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -53,9 +51,9 @@ const OrderList = ({  ...rest }) => {
   };
 
   const handlePageChange = (event, newPage) => {
-    setPage(newPage+1);
+    setPage(newPage + 1);
   };
-  console.log(orders)
+  console.log(orders);
 
   return (
     <Card {...rest}>
@@ -64,57 +62,28 @@ const OrderList = ({  ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-
-                <TableCell>
-                  Name
-                </TableCell>
-                <TableCell>
-                  Order state
-                </TableCell>
-                <TableCell>
-                  Total price
-                </TableCell>
-
+                <TableCell>Order Id</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Order state</TableCell>
+                <TableCell>Total price</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders && orders.map((order) => (
-                <TableRow
-                  hover
-                  key={order.id}
-                  selected={selectedCustomerIds.indexOf(order.id) !== -1}
-                >
-
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Avatar
-                        // src={customer.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials("ee")}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {order.first_name} {order.last_name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {order.order_state}
-                  </TableCell>
-                  <TableCell>
-                    {order.total_order_price}
-                  </TableCell>
-  
-                </TableRow>
-              ))}
+              {orders &&
+                orders.map((order) => (
+                  <TableRow
+                    hover
+                    key={order.id}
+                    selected={selectedCustomerIds.indexOf(order.id) !== -1}
+                  >
+                    <TableCell>{order.id}</TableCell>
+                    <TableCell>
+                      {order.first_name} {order.last_name}
+                    </TableCell>
+                    <TableCell>{order.order_state}</TableCell>
+                    <TableCell>{order.total_order_price}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Box>
@@ -124,11 +93,11 @@ const OrderList = ({  ...rest }) => {
         count={totalOrdersCounts}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
-        page={page -1 }
+        page={page - 1}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
-        showLastButton = {true}
-        showFirstButton = {true}
+        showLastButton={true}
+        showFirstButton={true}
       />
     </Card>
   );
