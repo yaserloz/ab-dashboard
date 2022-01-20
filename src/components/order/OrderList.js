@@ -64,7 +64,9 @@ const OrderList = ({  ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-
+              <TableCell>
+                  Order Id
+                </TableCell>
                 <TableCell>
                   Name
                 </TableCell>
@@ -86,25 +88,11 @@ const OrderList = ({  ...rest }) => {
                 >
 
                   <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Avatar
-                        // src={customer.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials("ee")}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {order.first_name} {order.last_name}
-                      </Typography>
-                    </Box>
+                  {order.first_name} {order.last_name}
+
+                  </TableCell>
+                  <TableCell>
+                    {order.id}
                   </TableCell>
                   <TableCell>
                     {order.order_state}
