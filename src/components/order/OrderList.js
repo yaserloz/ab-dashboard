@@ -28,8 +28,8 @@ const OrderList = ({ ...rest }) => {
   }, [page, limit]);
 
   const getOrders = () => {
-    axios.get(`selling-orders`).then((response) => {
-      setOrders(response.data);
+    axios.get(`selling-orders?page=${page}&take=${limit}`).then((response) => {
+      setOrders(response.data.data);
       setTotalOrdersCounts(response.data['total-result-count']);
     });
   };

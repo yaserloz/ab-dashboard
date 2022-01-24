@@ -15,9 +15,6 @@ const ProductListToolbar = (props) => {
           justifyContent: 'flex-end'
         }}
       >
-        <Button color="primary" variant="contained">
-          Add product
-        </Button>
       </Box>
       <Box sx={{ mt: 3 }}>
         <Card>

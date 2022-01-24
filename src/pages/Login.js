@@ -57,17 +57,18 @@ const Login = () => {
             })}
             onSubmit={(userInfo, { setSubmitting }) => {
               axios
-                .post('token', {
+                .post('ab/token', {
                   email: userInfo.email,
-                  app:'ab',
                   password: userInfo.password,
                   grantType: 'token'
                 })
                 .then((response) => {
                   const user = jwt(response.data.token);
                   dispatch(addUser(user.data));
-                  navigate('/app/dashboard', { replace: true });
-                });
+                  navigate('/dashboard', { replace: true });
+                }).catch(error => {
+                  console.log(error)
+                })
               setSubmitting(false);
             }}
           >

@@ -36,11 +36,11 @@ const items = [
     icon: BarChartIcon,
     title: 'Dashboard'
   },
-  {
-    href: '/customers',
-    icon: UsersIcon,
-    title: 'Customers'
-  },
+  // {
+  //   href: '/customers',
+  //   icon: UsersIcon,
+  //   title: 'Customers'
+  // },
   {
     href: '/products',
     icon: ShoppingBagIcon,
@@ -51,21 +51,21 @@ const items = [
     icon: ShoppingBagIcon,
     title: 'Orders'
   },
-  {
-    href: '/purchase-order',
-    icon: ShoppingBagIcon,
-    title: 'Purchase orders'
-  },
+  // {
+  //   href: '/purchase-order',
+  //   icon: ShoppingBagIcon,
+  //   title: 'Purchase orders'
+  // },
   {
     href: '/account',
     icon: UserIcon,
     title: 'Account'
   },
-  {
-    href: '/shipments',
-    icon: Truck,
-    title: 'Shipments'
-  }
+  // {
+  //   href: '/shipments',
+  //   icon: Truck,
+  //   title: 'Shipments'
+  // }
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
