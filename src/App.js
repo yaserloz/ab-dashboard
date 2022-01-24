@@ -40,19 +40,12 @@ axios.interceptors.response.use(
     if (
       error.response &&
       error.response.data &&
-      error.response.data.error &&
-      error.response.data.code === '1090'
+      error.response.data.error
     ) {
-      store.dispatch(
-        showNotification({
-          type: 'error',
-          message: error.response.data.Explination,
-          show: true
-        })
-      );
+      console.error("Api error: "+error.response.data.Explination)
     }
 
-    if (error.response.status === 400 && originalRequest.url === 'token') {
+    if (error.response.status === 400 && originalRequest.url === 'ab/token') {
       store.dispatch(
         showNotification({ type: 'error', message: 'Please login', show: true })
       );
@@ -60,14 +53,17 @@ axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response.status === 401 && !originalRequest._retry && originalRequest.url !== 'ab/token') {
+      
       originalRequest._retry = true;
       return axios
-        .post('token', {
+        .post('ab/token', {
           grantType: 'refresh_token',
-          app: 'ab'
         })
         .then((res) => {
+          if(!res){
+            return;
+          }
           originalRequest.headers['Authorization'] = res.data.token;
           return axios(originalRequest);
         });
@@ -78,11 +74,9 @@ axios.interceptors.response.use(
 const App = () => {
   const routing = useRoutes(routes);
 
-  // const navigate = useNavigate();
-
   if (!store.getState().auth.user) {
     axios
-      .post('token', {
+      .post('ab/token', {
         grantType: 'refresh_token',
         app: 'ab'
       })
@@ -91,7 +85,6 @@ const App = () => {
         store.dispatch(addUser(user.data));
       });
   }
-
   return (
     <ThemeProvider theme={theme}>
       <Notification />
