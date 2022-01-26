@@ -81,8 +81,8 @@ const App = () => {
         app: 'ab'
       })
       .then((res) => {
-        const user = jwt(res.data.token);
-        store.dispatch(addUser(user.data));
+        // const user = jwt(res.data.token);
+        // store.dispatch(addUser(user.data));
       });
   }
   return (

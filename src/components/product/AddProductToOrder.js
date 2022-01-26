@@ -13,7 +13,7 @@ const AddProductToOrder = (props) => {
   const [stockinfoForProduct, setStockinfoForProduct] = React.useState([]);
   const [stockToAddToShipment, setStockToAddToShipment] = React.useState([]);
 
-  const sellingPoint = useSelector((state) => state.sellingPoint);
+  // const sellingPoint = useSelector((state) => state.sellingPoint);
 
   const currentSellingOrder = useSelector(
     (state) => state.sellingOrder.currentSellingOrder
@@ -42,7 +42,7 @@ const AddProductToOrder = (props) => {
   useEffect(() => {
     axios
       .get(
-        `product-stock/availability?product-id=${props.selectedProduct.id}&selling-point=${sellingPoint.selectedSellingPoint.id}`
+        `product-stock/availability?product-id=${props.selectedProduct.id}`
       )
       .then((response) => {
         setStockinfoForProduct(response.data);
