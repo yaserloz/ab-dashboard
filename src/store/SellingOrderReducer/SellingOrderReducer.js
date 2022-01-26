@@ -69,7 +69,7 @@ export const loadSellingOrders = () => (dispatch, getState) => {
 }
 
 export const addSellingOrder = (data) => (dispatch, getState) => {
-    dispatch(actions.apiCallBegan({
+    return actions.apiCallBegan({
         url:'/selling-order-add',
         method:'post',
         data:data,
@@ -79,7 +79,7 @@ export const addSellingOrder = (data) => (dispatch, getState) => {
         onFinish:sellingOrderAddFinished.type,
         dipatchNext: completeSellingOrderProcessStarted.type,
         wait:4000,
-    }))
+    })
 }
 
 

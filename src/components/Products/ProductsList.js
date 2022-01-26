@@ -71,7 +71,7 @@ const ProductsList = (props) => {
   const [products, setProducts] = React.useState([]);
   useEffect(() => {
     axios.get(env() + "products").then((response) => {
-      setProducts(response.data);
+      setProducts(response.data.data);
     });
   }, []);
   const classes = useStyles();

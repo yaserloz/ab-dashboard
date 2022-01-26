@@ -61,39 +61,39 @@ const PurchaseOrderForm = (props) => {
   const [purchaseOrder, setPurchaseOrder] = React.useState(null);
 
   useEffect(() => {
-    axios.get(env() + "suppliers").then((response) => {
+    axios.get( "suppliers").then((response) => {
       const suppliers = response.data;
       setSuppliers(suppliers);
     });
 
-    axios.get(env() + "delivery-type").then((response) => {
+    axios.get("delivery-type").then((response) => {
       const deliverytypes = response.data;
       setDeliveryTypes(deliverytypes);
     });
 
-    axios.get(env() + "purchase-order/" + props.po).then((response) => {
+    axios.get("purchase-order/" + props.po).then((response) => {
       setPurchaseOrder(response.data);
     });
   }, [props.po]);
 
   const onSuppliersChangeHandler = (supplier) => {
     const purchaseOrderCopy = { ...purchaseOrder };
-    purchaseOrderCopy.orderInfo[0].supplier = supplier.id;
-    purchaseOrderCopy.orderInfo[0].company_name = supplier.name;
+    purchaseOrderCopy.PurchaseOrder.supplierId = supplier.id;
+    purchaseOrderCopy.PurchaseOrder.supplierName = supplier.name;
     setPurchaseOrder(purchaseOrderCopy);
   };
 
   const onDeliveryTypesHandler = (deliveryType) => {
     const purchaseOrderCopy = { ...purchaseOrder };
-    purchaseOrderCopy.orderInfo[0].delivery_type_id = deliveryType.id;
-    purchaseOrderCopy.orderInfo[0].name = deliveryType.name;
+    purchaseOrderCopy.PurchaseOrder.deliveryTypeId = deliveryType.id;
+    purchaseOrderCopy.PurchaseOrder.name = deliveryType.name;
     setPurchaseOrder(purchaseOrderCopy);
   };
 
   const onCurrencyChangeHandler = (currency) => {
     const purchaseOrderCopy = { ...purchaseOrder };
-    purchaseOrderCopy.orderInfo[0].currency_id = currency.value;
-    purchaseOrderCopy.orderInfo[0].title = currency.name;
+    purchaseOrderCopy.PurchaseOrder.currencyId = currency.value;
+    purchaseOrderCopy.PurchaseOrder.currecny = currency.name;
     setPurchaseOrder(purchaseOrderCopy);
   };
 
@@ -105,9 +105,9 @@ const PurchaseOrderForm = (props) => {
     const purchaseOrderCopy = { ...purchaseOrder };
 
     axios.post(
-      env() + "purchase-order/save/" + purchaseOrderCopy.orderInfo[0].id,
+      env() + "purchase-order/save/" + purchaseOrderCopy.PurchaseOrder.id,
       {
-        purchaseOrder: purchaseOrderCopy.orderInfo[0],
+        purchaseOrder: purchaseOrderCopy.PurchaseOrder,
         ac: "ThisIsHowIKnowYasir@ab",
       }
     );
@@ -118,13 +118,13 @@ const PurchaseOrderForm = (props) => {
     const productCodeBar = event.target.value.trim();
     if (!productCodeBar) return;
     const product = await fetchProductByItsCodeBar(productCodeBar);
-    const codeBar = product.data[0].code_bar;
-    const id = product.data[0].id;
+    const codeBar = product.data.code_bar;
+    const id = product.data.id;
 
     const purchaseOrderCopy = { ...purchaseOrder };
 
-    purchaseOrderCopy.orderLines[lineIndex] = {
-      ...purchaseOrderCopy.orderLines[lineIndex],
+    purchaseOrderCopy.Lines[lineIndex] = {
+      ...purchaseOrderCopy.Lines[lineIndex],
       code_bar: codeBar,
       product_id: id,
     };
@@ -134,8 +134,8 @@ const PurchaseOrderForm = (props) => {
   const codeBarChangeHandler = (lineIndex) => (event) => {
     const productCodeBar = event.target.value;
     const purchaseOrderCopy = { ...purchaseOrder };
-    purchaseOrderCopy.orderLines[lineIndex] = {
-      ...purchaseOrderCopy.orderLines[lineIndex],
+    purchaseOrderCopy.Lines[lineIndex] = {
+      ...purchaseOrderCopy.Lines[lineIndex],
       code_bar: productCodeBar,
     };
 
@@ -146,8 +146,8 @@ const PurchaseOrderForm = (props) => {
     const productCount = event.target.value;
     const purchaseOrderCopy = { ...purchaseOrder };
 
-    purchaseOrderCopy.orderLines[lineIndex] = {
-      ...purchaseOrderCopy.orderLines[lineIndex],
+    purchaseOrderCopy.Lines[lineIndex] = {
+      ...purchaseOrderCopy.Lines[lineIndex],
       product_count: productCount,
     };
     setPurchaseOrder(purchaseOrderCopy);
@@ -156,10 +156,10 @@ const PurchaseOrderForm = (props) => {
   const calculateLineTotalPrice = (lineIndex) => (event) => {
     const purchaseOrderCopy = { ...purchaseOrder };
     const totalPrice =
-      purchaseOrderCopy.orderLines[lineIndex].product_count *
-      purchaseOrderCopy.orderLines[lineIndex].unit_price;
-    purchaseOrderCopy.orderLines[lineIndex] = {
-      ...purchaseOrderCopy.orderLines[lineIndex],
+      purchaseOrderCopy.Lines[lineIndex].product_count *
+      purchaseOrderCopy.Lines[lineIndex].unit_price;
+    purchaseOrderCopy.Lines[lineIndex] = {
+      ...purchaseOrderCopy.Lines[lineIndex],
       total_price: totalPrice,
     }
 
@@ -170,8 +170,8 @@ const PurchaseOrderForm = (props) => {
   const productPriceChangeHandler = (lineIndex) => (event) => {
     const productPrice = event.target.value;
     const purchaseOrderCopy = { ...purchaseOrder };
-    purchaseOrderCopy.orderLines[lineIndex] = {
-      ...purchaseOrderCopy.orderLines[lineIndex],
+    purchaseOrderCopy.Lines[lineIndex] = {
+      ...purchaseOrderCopy.Lines[lineIndex],
       unit_price: productPrice,
     };
     setPurchaseOrder(purchaseOrderCopy);
@@ -183,7 +183,7 @@ const PurchaseOrderForm = (props) => {
   const addEmptyOrderLine = () => {
     const purchaseOrderCopy = { ...purchaseOrder };
 
-    purchaseOrderCopy.orderLines = [
+    purchaseOrderCopy.Lines = [
       {
         toAdd: true,
         unit_price: " ",
@@ -193,7 +193,7 @@ const PurchaseOrderForm = (props) => {
         total_price: " ",
         notSaved: "",
       },
-    ].concat(purchaseOrderCopy.orderLines);
+    ].concat(purchaseOrderCopy.Lines);
     setPurchaseOrder(purchaseOrderCopy);
   };
 
@@ -210,7 +210,7 @@ const PurchaseOrderForm = (props) => {
 
   const presisteLine = async (index, event) => {
     const purchaseOrderCopy = { ...purchaseOrder };
-    const lineToPresiste = purchaseOrderCopy.orderLines[index];
+    const lineToPresiste = purchaseOrderCopy.Lines[index];
     const response = await axios.post(
       env() + "purchase-order/" + props.po + "/lines/add",
       {
@@ -232,18 +232,18 @@ const PurchaseOrderForm = (props) => {
     const purchaseOrderCopy = { ...purchaseOrder };
 
     if (e.target.checked) {
-      purchaseOrderCopy.orderLines[index].checked = true;
+      purchaseOrderCopy.Lines[index].checked = true;
       setPurchaseOrder(purchaseOrderCopy);
       return;
     }
-    purchaseOrderCopy.orderLines[index].checked = false;
+    purchaseOrderCopy.Lines[index].checked = false;
     setPurchaseOrder(purchaseOrderCopy);
   };
 
   const clearLineInput = (index) => {
     const purchaseOrderCopy = { ...purchaseOrder };
 
-    purchaseOrderCopy.orderLines[index] = {
+    purchaseOrderCopy.Lines[index] = {
       unit_price: " ",
       code_bar: " ",
       product_id: " ",
@@ -256,7 +256,7 @@ const PurchaseOrderForm = (props) => {
   const cleanLinesHandler = (popupstate) => {
     const purchaseOrderCopy = { ...purchaseOrder };
     popupstate.close();
-    purchaseOrderCopy.orderLines.forEach((line, index) => {
+    purchaseOrderCopy.Lines.forEach((line, index) => {
       if (line.checked) {
         clearLineInput(index);
       }
@@ -266,8 +266,7 @@ const PurchaseOrderForm = (props) => {
   const classes = useStyles();
 
   const speedDialStyle = speedDialuseStyles();
-
-  if (purchaseOrder && !purchaseOrder.orderInfo.length) {
+  if (purchaseOrder && !purchaseOrder.PurchaseOrder) {
     return <h3>Error could not fetch orderInfo {`${props.po}`}</h3>;
   }
 
@@ -279,8 +278,8 @@ const PurchaseOrderForm = (props) => {
           <SuggestionInput
             disabled={
               purchaseOrder &&
-              purchaseOrder.orderInfo[0] &&
-              purchaseOrder.orderInfo[0].statu === "COMPLETE"
+              purchaseOrder.PurchaseOrder &&
+              purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                 ? true
                 : false
             }
@@ -290,13 +289,13 @@ const PurchaseOrderForm = (props) => {
             options={suppliers && suppliers.length ? suppliers : null}
             selectedOptions={
               purchaseOrder &&
-              purchaseOrder.orderInfo[0] &&
-              purchaseOrder.orderInfo &&
+              purchaseOrder.PurchaseOrder &&
+              purchaseOrder.PurchaseOrder &&
               suppliers &&
               suppliers.length
                 ? suppliers.find(
                     (supplier) =>
-                      purchaseOrder.orderInfo[0].company_name === supplier.name
+                      purchaseOrder.PurchaseOrder.supplierName === supplier.name
                   )
                 : null
             }
@@ -306,8 +305,8 @@ const PurchaseOrderForm = (props) => {
           <SuggestionInput
             disabled={
               purchaseOrder &&
-              purchaseOrder.orderInfo[0] &&
-              purchaseOrder.orderInfo[0].statu === "COMPLETE"
+              purchaseOrder.PurchaseOrder &&
+              purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                 ? true
                 : false
             }
@@ -318,12 +317,12 @@ const PurchaseOrderForm = (props) => {
             onOptionChange={onDeliveryTypesHandler}
             selectedOptions={
               purchaseOrder &&
-              purchaseOrder.orderInfo &&
+              purchaseOrder.PurchaseOrder &&
               deliveryTypes &&
               deliveryTypes.length
                 ? deliveryTypes.find(
                     (deliveryType) =>
-                      purchaseOrder.orderInfo[0].name === deliveryType.name
+                      purchaseOrder.PurchaseOrder.name === deliveryType.name
                   )
                 : null
             }
@@ -334,8 +333,8 @@ const PurchaseOrderForm = (props) => {
           <SuggestionInput
             disabled={
               purchaseOrder &&
-              purchaseOrder.orderInfo[0] &&
-              purchaseOrder.orderInfo[0].statu === "COMPLETE"
+              purchaseOrder.PurchaseOrder &&
+              purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                 ? true
                 : false
             }
@@ -347,9 +346,9 @@ const PurchaseOrderForm = (props) => {
             ]}
             onOptionChange={onCurrencyChangeHandler}
             selectedOptions={{
-              name: purchaseOrder ? purchaseOrder.orderInfo[0].title : null,
+              name: purchaseOrder && purchaseOrder.PurchaseOrder ? purchaseOrder.PurchaseOrder.currecny : null,
               value: purchaseOrder
-                ? purchaseOrder.orderInfo[0].currency_id
+                ? purchaseOrder.PurchaseOrder.currencyId
                 : null,
             }}
           />
@@ -358,14 +357,14 @@ const PurchaseOrderForm = (props) => {
           <SelectList
             disabled={
               purchaseOrder &&
-              purchaseOrder.orderInfo[0] &&
-              purchaseOrder.orderInfo[0].statu === "COMPLETE"
+              purchaseOrder.PurchaseOrder &&
+              purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                 ? true
                 : false
             }
             fullWidth
             label="Arrived"
-            // selectedOption = { purchaseOrder && parseInt(purchaseOrder.orderInfo[0].arrived)}
+            // selectedOption = { purchaseOrder && parseInt(purchaseOrder.PurchaseOrder.arrived)}
             // value="Arrived ?"
             options={[
               {
@@ -384,8 +383,8 @@ const PurchaseOrderForm = (props) => {
           <TextInput
             disabled={
               purchaseOrder &&
-              purchaseOrder.orderInfo[0] &&
-              purchaseOrder.orderInfo[0].statu === "COMPLETE"
+              purchaseOrder.PurchaseOrder &&
+              purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                 ? true
                 : false
             }
@@ -403,10 +402,10 @@ const PurchaseOrderForm = (props) => {
       <div>
         Order Total :-{" "}
         {purchaseOrder &&
-        purchaseOrder.orderLines &&
-        purchaseOrder.orderLines.length
+        purchaseOrder.Lines &&
+        purchaseOrder.Lines.length
           ? parseInt(
-              purchaseOrder.orderLines.reduce((a, b) => ({
+              purchaseOrder.Lines.reduce((a, b) => ({
                 total_price:
                   parseFloat(a.total_price) + parseFloat(b.total_price),
               })).total_price
@@ -435,14 +434,14 @@ const PurchaseOrderForm = (props) => {
       </Button>
       <br /> <br /><br /> <br />
       {purchaseOrder
-        ? purchaseOrder.orderLines.map((line, index) => {
+        ? purchaseOrder.Lines.map((line, index) => {
             return (
               <Grid container spacing={3} key={index}>
                 <Grid item></Grid>
                 <Grid item>
                   <TextInput
                     disabled={
-                      purchaseOrder.orderInfo[0].statu === "COMPLETE"
+                      purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                         ? "disabled"
                         : null
                     }
@@ -457,7 +456,7 @@ const PurchaseOrderForm = (props) => {
                 <Grid item>
                   <TextInput
                     disabled={
-                      purchaseOrder.orderInfo[0].statu === "COMPLETE"
+                      purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                         ? "disabled"
                         : null
                     }
@@ -471,7 +470,7 @@ const PurchaseOrderForm = (props) => {
                 <Grid item>
                   <TextInput
                     disabled={
-                      purchaseOrder.orderInfo[0].statu === "COMPLETE"
+                      purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                         ? "disabled"
                         : null
                     }
@@ -486,7 +485,7 @@ const PurchaseOrderForm = (props) => {
                 <Grid item>
                   <TextInput
                     disabled={
-                      purchaseOrder.orderInfo[0].statu === "COMPLETE"
+                      purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                         ? "disabled"
                         : null
                     }
@@ -501,7 +500,7 @@ const PurchaseOrderForm = (props) => {
                 <Grid item>
                   <TextInput
                     disabled={
-                      purchaseOrder.orderInfo[0].statu === "COMPLETE"
+                      purchaseOrder.PurchaseOrder.orderState === "COMPLETE"
                         ? "disabled"
                         : null
                     }

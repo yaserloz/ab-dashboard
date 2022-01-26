@@ -16,7 +16,7 @@ const OrderToPdf = (props) => {
 
   useEffect(() => {
     axios.get(env() + "selling-orders/" + props.id).then((response) => {
-      setOrderInfo(response.data.orderInfo[0]);
+      setOrderInfo(response.data.orderInfo);
       if (response.data.orderLines.length > 11) {
         setOrderLinesPageOne(response.data.orderLines.slice(0, 11));
         setOrderLinesPageTwo(response.data.orderLines.slice(11));

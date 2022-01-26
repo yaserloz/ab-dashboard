@@ -23,8 +23,10 @@ import SellingOrderList from "../components/SellingOrder/SellingOrderList";
 import OrderToPdf from "../components/OrderToPdf/OrderToPdf";
 import SellingOrderForm from "../components/SellingOrder/SellingOrderForm";
 import Products from "../views/Products";
-import Shipment from '../views/Sipments'
-import Stock from '../views/Stock'
+import Shipment from "../views/Sipments";
+import Stock from "../views/Stock";
+import Login from "../views/Login";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -203,6 +205,8 @@ export default function Dashboard(props) {
           <Shipment onLinkClick={goToPageHandler} />
         ) : currentPage && currentPage.page === "stock" ? (
           <Stock onLinkClick={goToPageHandler} />
+        ) : currentPage && currentPage.page === "login" ? (
+          <Login onLinkClick={goToPageHandler} />
         ) : (
           <div>INDEX</div>
         )}

@@ -32,7 +32,8 @@ function SuggestionInput({selectedOptions , options, label, disabled, onOptionCh
         value={value}
         
         getOptionSelected={(option, value) => {
-          return option.name === value.name
+          console.log(value, option)
+         // return option.name === value.name
         }}
 
         onChange={(event, newValue) => {

@@ -25,21 +25,21 @@ const EditProductForm = (props) => {
       setProduct(response.data);
     });
 
-    getImages().then((response) => {
-      console.log(response.data);
-      setImages(response.data);
-    });
+    // getImages().then((response) => {
+    //   console.log(response.data);
+    //   setImages(response.data);
+    // });
   }, [props.productId]);
 
   const getProductDetails = () => {
     return axios.get(env() + "products/" + props.productId);
   };
 
-  const getImages = () =>
-    axios.get(
-      "http://yaz-fr.com/ab-online-cdn/images/images.php?productId=" +
-        props.productId
-    );
+  // const getImages = () =>
+  //   axios.get(
+  //     "http://yaz-fr.com/ab-online-cdn/images/images.php?productId=" +
+  //       props.productId
+  //   );
 
   const codeBarChangeHandler = (event) => {
     const productCodeBar = event.target.value;
@@ -51,30 +51,30 @@ const EditProductForm = (props) => {
   const localCodeBarChangeHandler = (event) => {
     const productLocalCodeBar = event.target.value;
     const productCopy = { ...product };
-    productCopy.product[0].local_code_bar = productLocalCodeBar;
+    productCopy.product.local_code_bar = productLocalCodeBar;
     setProduct(productCopy);
   };
 
   const weightChangeHandler = (event) => {
     const weight = event.target.value;
     const productCopy = { ...product };
-    productCopy.product[0].weight = weight;
+    productCopy.product.weight = weight;
     setProduct(productCopy);
   };
 
   const volumeChangeHandler = (event) => {
     const volume = event.target.value;
     const productCopy = { ...product };
-    productCopy.product[0].volume = volume;
+    productCopy.product.volume = volume;
     setProduct(productCopy);
   };
 
   const saveProductDetails = () => {
     const productCopy = { ...product };
-    const productDetails = productCopy.product[0];
+    const productDetails = productCopy.product;
+    console.log("productDetails", productDetails);
     axios.post(env() + "products", productDetails).then((response) => {
-      console.log(response.data);
-      // setProduct(response.data);
+      alert("saved!")
     });
   };
 

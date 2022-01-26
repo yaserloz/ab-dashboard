@@ -36,6 +36,7 @@ const SignupSchema = Yup.object().shape({
 });
 
 const AddProductToShipmentForm = (props) => {
+  console.log(props)
   const {
     values,
     handleSubmit,

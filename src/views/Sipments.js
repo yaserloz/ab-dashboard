@@ -17,9 +17,9 @@ const Shipments = () => {
     setLoading(true)
     setTimeout(() => {
       axios
-      .put(env() + "shipments")
+      .put("shipments")
       .then((response) => {
-        setShipmentToEdit(response.data.lastInsertedId);
+        setShipmentToEdit(response.data[0].id);
         setShowAddShipmentDialog(true);
         setLoading(false)
       })

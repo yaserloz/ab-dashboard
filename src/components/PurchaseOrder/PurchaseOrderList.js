@@ -73,7 +73,7 @@ const PurchaseOrderList = (props) => {
   // const purchaseOrders = useSelector(getPurchaseOrders);
   const [PurchaseOrders, setPurchaseOrders] = React.useState([]);
   useEffect(() => {
-    axios.get(env() + "purchase-orders").then((response) => {
+    axios.get("purchase-orders").then((response) => {
       console.log(response.data);
       setPurchaseOrders(response.data);
     });
