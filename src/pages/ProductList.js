@@ -47,7 +47,7 @@ const ProductList = () => {
   };
 
   const getProducts = () => {
-    let query = `products?page=${page}&take=${limit}`;
+    let query = `ab/products?page=${page}&take=${limit}`;
     axios.get(query).then((response) => {
       if (response && response.data && response.data.data) {
         dispatch(addProducts(response.data.data));
