@@ -78,7 +78,8 @@ export default function Basket() {
   const userSelectHandler = (client) => {
     dispatch(
       updateSellingOrder({
-        id: sellingOrder.currentSellingOrder.orderInfo.id,
+        //TODO put pack selling point diynmcly
+        id: 1,
         created_for_id: client.id
       })
     );
