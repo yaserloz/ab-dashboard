@@ -42,6 +42,22 @@ export const createNewSellingOrder = (sellingOrder) => (dispatch, getState) => {
   }))
 }
 
+export const mountSellingOrderForModification = (sellingOrderId) => (dispatch, getState) => {
+  dispatch(actions.apiCallBegan({
+      url:'/selling-orders/'+sellingOrderId,
+      method:'get',
+      onStart:null,
+      onError:() => showNotification({type:'error', message:"Error could not mount selling Order", show:true}),
+      onSuccess:() => showNotification({type:'success', message:"Selling Order mounted", show:true}),
+      dipatchNext:null,
+      callback:(order) => {
+        setSellingOrderToLocalStorage(order);
+        return {type:currentSellingOrderAdded.type, payload:order}
+      },
+      onFinal:showNotification({type:null, message:null, show:false}),
+  }))
+}
+
 export const updateSellingOrder = (sellingOrder) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
       url:'/selling-orders',

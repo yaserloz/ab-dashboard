@@ -9,7 +9,7 @@ import NotFound from 'src/pages/NotFound';
 import ProductList from 'src/pages/ProductList';
 import Settings from 'src/pages/Settings';
 import Orders from 'src/pages/Orders';
-
+import OrderToPdf from "./components/OrderToPdf/OrderToPdf"
 const routes = [
   {
     path: '/',
@@ -21,6 +21,7 @@ const routes = [
       { path: 'products', element: <ProductList /> },
       { path: 'settings', element: <Settings /> },
       { path: 'orders', element: <Orders /> },
+
 
       { path: '*', element: <Navigate to="/404" /> }
     ]
@@ -34,7 +35,15 @@ const routes = [
       { path: '/', element: <Navigate to="/dashboard" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
+  },
+  {
+    path: '/',
+    children: [
+      { path: 'order-pdf', element: <OrderToPdf /> },
+
+    ]
   }
+
 ];
 
 export default routes;
