@@ -242,8 +242,8 @@ const OrderToPdf = (props) => {
                     return (
                       <p style={{ marginRight: '5px', direction: 'rtl' }}>
                         {line.title
-                          ? line.id + ':- ' + truncate(line.title, 50)
-                          : line.id + ':- من غير عنوان'}{' '}
+                          ? line.product + ':- ' + truncate(line.title, 50)
+                          : line.product + ':- من غير عنوان'}{' '}
                       </p>
                     );
                   })
@@ -302,18 +302,18 @@ const OrderToPdf = (props) => {
                   ? orderLinesPageTwo.map((line) => {
                       return (
                         <p>
-                          {parseInt(line.one_product_count).toLocaleString(
-                            'ar-IQ'
-                          )}{' '}
-                          *{' '}
-                          {parseInt(line.one_product_price).toLocaleString(
-                            'ar-IQ'
-                          )}{' '}
-                          ={' '}
-                          {parseInt(line.one_product_total).toLocaleString(
-                            'ar-IQ'
-                          )}
-                        </p>
+                        {parseInt(line.count).toLocaleString(
+                          'ar-IQ'
+                        )}{' '}
+                        *{' '}
+                        {parseInt(line.unit_price).toLocaleString(
+                          'ar-IQ'
+                        )}{' '}
+                        ={' '}
+                        {(parseInt(line.count) * parseInt(line.unit_price)).toLocaleString(
+                          'ar-IQ'
+                        )}
+                      </p>
                       );
                     })
                   : null}
