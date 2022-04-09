@@ -8,7 +8,7 @@ import { Link  } from 'react-router-dom';
 
 const OrderList = ({ ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
   const [orders, setOrders] = useState([]);
   const [totalOrdersCounts, setTotalOrdersCounts] = useState(0);
@@ -34,8 +34,8 @@ const OrderList = ({ ...rest }) => {
     // });
   };
 
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
+  const handleLimitChange = (limit) => {
+    setLimit(limit);
     setPage(1);
   };
 
@@ -134,8 +134,11 @@ const OrderList = ({ ...rest }) => {
           columns={columns}
           pagination
           paginationMode="server"
-          rowsPerPageOptions={[8]}
-          pageSize={8}
+          onPageSizeChange={handleLimitChange}
+
+          rowsPerPageOptions={[5,8, 10,25,50,100]}
+          pageSize={limit}
+
           rowCount={totalOrdersCounts}
           onPageChange={handlePageChange}
           disableSelectionOnClick
