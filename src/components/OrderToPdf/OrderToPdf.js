@@ -29,7 +29,7 @@ const OrderToPdf = (props) => {
       }
       let total = 0;
       response.data.orderLines.forEach((line) => {
-        total += parseInt(line.one_product_total);
+        total += (parseInt(line.count) * parseInt(line.unit_price));
       });
       setOrderTotal(total);
     });
@@ -356,8 +356,8 @@ const OrderToPdf = (props) => {
                       return (
                         <p style={{ marginRight: '5px', direction: 'rtl' }}>
                           {line.title
-                            ? line.product_id + ':- ' + truncate(line.title, 50)
-                            : line.product_id + ':- من غير عنوان'}{' '}
+                            ? line.product + ':- ' + truncate(line.title, 50)
+                            : line.product + ':- من غير عنوان'}{' '}
                         </p>
                       );
                     })
