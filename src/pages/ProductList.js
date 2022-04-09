@@ -120,7 +120,7 @@ const ProductList = () => {
                   onRowsPerPageChange={handleLimitChange}
                   page={page - 1}
                   rowsPerPage={limit}
-                  rowsPerPageOptions={[5, 10, 25]}
+                  rowsPerPageOptions={[5, 10, 25, 100, 200]}
                   showLastButton={true}
                   showFirstButton={true}
                 />
