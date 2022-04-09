@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import logo from '../../logo.svg';
 import { Helmet } from 'react-helmet';
-import { Navigate, Routes, Route, useParams   } from 'react-router-dom';
+import { Navigate, Routes, Route, useParams } from 'react-router-dom';
 
 const OrderToPdf = (props) => {
   const [orderInfo, setOrderInfo] = useState([]);
@@ -10,15 +10,14 @@ const OrderToPdf = (props) => {
   const [orderLinesPageOne, setOrderLinesPageOne] = useState([]);
   const [orderLinesPageTwo, setOrderLinesPageTwo] = useState([]);
   const [orderTotal, setOrderTotal] = useState(0);
-  const {id} = useParams() ?? false
-  
+  const { id } = useParams() ?? false;
+
   function truncate(str, n) {
     return str.length > n ? str.substr(0, n - 1) + '...' : str;
   }
 
   useEffect(() => {
-    if(!id || !parseInt(id))
-    return false
+    if (!id || !parseInt(id)) return false;
     axios.get('selling-orders/' + id).then((response) => {
       setOrderInfo(response.data.orderInfo);
       if (response.data.orderLines.length > 11) {
@@ -29,14 +28,13 @@ const OrderToPdf = (props) => {
       }
       let total = 0;
       response.data.orderLines.forEach((line) => {
-        total += (parseInt(line.count) * parseInt(line.unit_price));
+        total += parseInt(line.count) * parseInt(line.unit_price);
       });
       setOrderTotal(total);
     });
   }, []);
 
-  if(!id || !parseInt(id))
-  return <Navigate  to="/404" />
+  if (!id || !parseInt(id)) return <Navigate to="/404" />;
 
   return (
     <>
@@ -78,7 +76,7 @@ const OrderToPdf = (props) => {
         >
           BEAUTY
         </div>
-        <div style={{ direction: 'rtl', marginBottom: '.5em' }} class="border">
+        <div style={{ direction: 'rtl', marginBottom: '.5em', border: '1px solid #E8ADAA ' }} class="border">
           <div style={{ display: 'flex', margin: '.5em' }}>
             <div className="order-number" style={{ marginLeft: '.5em' }}>
               رقم الطلب : {orderInfo ? orderInfo.id : null}
@@ -86,14 +84,17 @@ const OrderToPdf = (props) => {
             <div className="order-number"></div>
           </div>
 
-          <div style={{ display: 'flex', margin: '.5em' }}>
+          <div style={{ display: 'flex', margin: '.5em', }}>
             <div className="order-number" style={{ marginLeft: '.5em' }}>
               تاريخ الطلب : {orderInfo ? orderInfo.created_at : null}
             </div>
             <div class="order-date"></div>
           </div>
         </div>
-        <div className="client-contact-info border">
+        <div
+          style={{ display: 'flex', direction: 'rtl', border: '1px solid #E8ADAA '}}
+          className="client-contact-info border"
+        >
           <div style={{ flexGrow: 1, padding: '.3em', fontSize: 'large' }}>
             <div style={{ display: 'flex', margin: '.5em' }}>
               <div style={{ marginLeft: '.5em' }}>
@@ -174,29 +175,23 @@ const OrderToPdf = (props) => {
             </div> */}
           {/* </div> */}
 
-          <div style={{ flexGrow: '1' }}>
+          <div style={{ flexGrow: '1', border: '1px solid #E8ADAA ' }}>
             <div
               style={{ textAlign: 'center', padding: '5px' }}
               className="border"
             >
               العدد * السعر المنتج
             </div>
-            <div style={{ textAlign: 'center' }} className="border">
+            <div style={{ textAlign: 'center', border: '1px solid #E8ADAA ' }} className="border">
               {orderLinesPageOne && orderLinesPageOne.length
                 ? orderLinesPageOne.map((line) => {
                     return (
-                      <p>
-                        {parseInt(line.count).toLocaleString(
-                          'ar-IQ'
-                        )}{' '}
-                        *{' '}
-                        {parseInt(line.unit_price).toLocaleString(
-                          'ar-IQ'
-                        )}{' '}
-                        ={' '}
-                        {(parseInt(line.count) * parseInt(line.unit_price)).toLocaleString(
-                          'ar-IQ'
-                        )}
+                      <p style={{border: '1px solid #E8ADAA', padding: '5px'}}>
+                        {parseInt(line.count).toLocaleString('ar-IQ')} *{' '}
+                        {parseInt(line.unit_price).toLocaleString('ar-IQ')} ={' '}
+                        {(
+                          parseInt(line.count) * parseInt(line.unit_price)
+                        ).toLocaleString('ar-IQ')}
                       </p>
                     );
                   })
@@ -206,16 +201,16 @@ const OrderToPdf = (props) => {
 
           <div style={{ flexGrow: '1' }}>
             <div
-              style={{ textAlign: 'center', padding: '5px' }}
+              style={{ textAlign: 'center', padding: '5px', border: '1px solid #E8ADAA ' }}
               className="border"
             >
               كود بار{' '}
             </div>
-            <div style={{ textAlign: 'center' }} className="border">
+            <div style={{ textAlign: 'center', border: '1px solid #E8ADAA ' }} className="border">
               {orderLinesPageOne && orderLinesPageOne.length
                 ? orderLinesPageOne.map((line) => {
                     return (
-                      <p>{line.code_bar ? line.code_bar : '0000000000000'}</p>
+                      <p style={{border: '1px solid #E8ADAA', padding: '5px'}}>{line.code_bar ? line.code_bar : '0000000000000'}</p>
                     );
                   })
                 : null}
@@ -227,20 +222,21 @@ const OrderToPdf = (props) => {
               style={{
                 marginLeft: '.5em',
                 textAlign: 'center',
-                padding: '5px'
+                padding: '5px',
+                border: '1px solid #E8ADAA '
               }}
               className="border"
             >
               الوصف
             </div>
             <div
-              style={{ marginLeft: '.5em', textAlign: 'right' }}
+              style={{ marginLeft: '.5em', textAlign: 'right', border: '1px solid #E8ADAA ' }}
               className="border"
             >
               {orderLinesPageOne && orderLinesPageOne.length
                 ? orderLinesPageOne.map((line) => {
                     return (
-                      <p style={{ marginRight: '5px', direction: 'rtl' }}>
+                      <p style={{ marginRight: '5px', direction: 'rtl',border: '1px solid #E8ADAA ',padding: '5px' }}>
                         {line.title
                           ? line.product + ':- ' + truncate(line.title, 50)
                           : line.product + ':- من غير عنوان'}{' '}
@@ -252,7 +248,7 @@ const OrderToPdf = (props) => {
           </div>
         </div>
         {orderLinesPageTwo && orderLinesPageTwo.length ? (
-          <p>صفحة رقم 1</p>
+          <p style={{ marginTop:100}}>صفحة رقم 1</p>
         ) : null}
         <br /> <br />
         <br />
@@ -292,28 +288,22 @@ const OrderToPdf = (props) => {
             </div> */}
             <div style={{ flexGrow: '1' }}>
               <div
-                style={{ textAlign: 'center', padding: '5px' }}
+                style={{ textAlign: 'center', padding: '5px', border: '1px solid #E8ADAA ' }}
                 className="border"
               >
                 العدد * السعر المنتج
               </div>
-              <div style={{ textAlign: 'center' }} className="border">
+              <div style={{ textAlign: 'center', border: '1px solid #E8ADAA ' }} className="border">
                 {orderLinesPageTwo && orderLinesPageTwo.length
                   ? orderLinesPageTwo.map((line) => {
                       return (
-                        <p>
-                        {parseInt(line.count).toLocaleString(
-                          'ar-IQ'
-                        )}{' '}
-                        *{' '}
-                        {parseInt(line.unit_price).toLocaleString(
-                          'ar-IQ'
-                        )}{' '}
-                        ={' '}
-                        {(parseInt(line.count) * parseInt(line.unit_price)).toLocaleString(
-                          'ar-IQ'
-                        )}
-                      </p>
+                        <p style={{border: '1px solid #E8ADAA ',padding: '5px'}}>
+                          {parseInt(line.count).toLocaleString('ar-IQ')} *{' '}
+                          {parseInt(line.unit_price).toLocaleString('ar-IQ')} ={' '}
+                          {(
+                            parseInt(line.count) * parseInt(line.unit_price)
+                          ).toLocaleString('ar-IQ')}
+                        </p>
                       );
                     })
                   : null}
@@ -322,15 +312,15 @@ const OrderToPdf = (props) => {
 
             <div style={{ flexGrow: '1' }}>
               <div
-                style={{ textAlign: 'center', padding: '5px' }}
+                style={{ textAlign: 'center', padding: '5px',border: '1px solid #E8ADAA ' }}
                 className="border"
               >
                 كود بار{' '}
               </div>
-              <div style={{ textAlign: 'center' }} className="border">
+              <div style={{ textAlign: 'center',border: '1px solid #E8ADAA '  }} className="border">
                 {orderLinesPageTwo && orderLinesPageTwo.length
                   ? orderLinesPageTwo.map((line) => {
-                      return <p>{line.code_bar ? line.code_bar : ' '}</p>;
+                      return <p style={{border: '1px solid #E8ADAA ',padding: '5px'}}>{line.code_bar ? line.code_bar : ' '}</p>;
                     })
                   : null}
               </div>
@@ -341,21 +331,22 @@ const OrderToPdf = (props) => {
                 style={{
                   marginLeft: '.5em',
                   textAlign: 'center',
-                  padding: '5px'
+                  padding: '5px',
+                  border: '1px solid #E8ADAA '
                 }}
                 className="border"
               >
                 الوصف
               </div>
               <div
-                style={{ marginLeft: '.5em', textAlign: 'right' }}
+                style={{ marginLeft: '.5em', textAlign: 'right',border: '1px solid #E8ADAA '  }}
                 className="border"
               >
                 {orderLinesPageTwo && orderLinesPageTwo.length
                   ? orderLinesPageTwo.map((line) => {
                       return (
-                        <p style={{ marginRight: '5px', direction: 'rtl' }}>
-                          {line.title
+                        <p style={{ marginRight: '5px', direction: 'rtl',border: '1px solid #E8ADAA ',padding: '5px' }}>
+                        {line.title
                             ? line.product + ':- ' + truncate(line.title, 50)
                             : line.product + ':- من غير عنوان'}{' '}
                         </p>
@@ -367,7 +358,7 @@ const OrderToPdf = (props) => {
           </div>
         ) : null}
         {orderLinesPageTwo && orderLinesPageTwo.length ? (
-          <p>صفحة رقم 2</p>
+          <p style={{ marginTop:20}}>صفحة رقم 2</p>
         ) : null}
       </div>
     </>
