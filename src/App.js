@@ -3,7 +3,7 @@ import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from 'src/components/GlobalStyles';
 import 'src/mixins/chartjs';
 import theme from 'src/theme';
-import routes from 'src/routes';
+import RoutesDom from 'src/RoutesDom';
 import axios from 'axios';
 import env from './env';
 import Notification from './components/notification/Munotification';
@@ -11,7 +11,6 @@ import { showNotification } from './store/notification';
 import { addUser } from './store/auth';
 import store from './store/store';
 import jwt from 'jwt-decode'; // import dependency
-// import { useNavigate } from 'react-router-dom';
 
 axios.defaults.baseURL = env();
 axios.defaults.withCredentials = true;
@@ -72,7 +71,6 @@ axios.interceptors.response.use(
 );
 
 const App = () => {
-  const routing = useRoutes(routes);
 
   if (!store.getState().auth.user) {
     axios
@@ -89,7 +87,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <Notification />
       <GlobalStyles />
-      {routing}
+      <RoutesDom />
     </ThemeProvider>
   );
 };

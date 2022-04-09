@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import {
-  Box,
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow
-} from '@material-ui/core';
+
 import { DataGrid } from '@mui/x-data-grid';
 import { useSelector, useDispatch } from 'react-redux';
 import {mountSellingOrderForModification} from '../../store/sellingOrder'
+import { Link  } from 'react-router-dom';
+
 const OrderList = ({ ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(8);
@@ -107,8 +99,9 @@ const OrderList = ({ ...rest }) => {
       align: 'center',
       renderCell: params => {
         return (
-          <u style={{color: 'brown', cursor: "pointer"}} onClick={() => console.log}>
-            Download PDF
+          <u style={{color: 'brown', cursor: "pointer"}} >
+            <Link target="_blank" to={`/order-pdf/${params.id}`}>Download PDF</Link>
+            
           </u>
         );
       },
