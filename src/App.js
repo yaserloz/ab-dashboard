@@ -52,11 +52,11 @@ axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response.status === 401 && !originalRequest._retry && originalRequest.url !== 'ab/token') {
+    if (error.response.status === 401 && !originalRequest._retry && originalRequest.url !== 'atoken') {
       
       originalRequest._retry = true;
       return axios
-        .post('ab/token', {
+        .post('auth/token', {
           grantType: 'refresh_token',
         })
         .then((res) => {
@@ -74,13 +74,12 @@ const App = () => {
 
   if (!store.getState().auth.user) {
     axios
-      .post('ab/token', {
+      .post('auth/token', {
         grantType: 'refresh_token',
-        app: 'ab'
       })
       .then((res) => {
-        const user = jwt(res.data.token);
-        store.dispatch(addUser(user.data));
+        const user = res?.data.token && jwt(res?.data.token);
+        store.dispatch(addUser(user?.data));
       });
   }
   return (

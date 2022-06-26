@@ -57,7 +57,7 @@ const Login = () => {
             })}
             onSubmit={(userInfo, { setSubmitting }) => {
               axios
-                .post('ab/token', {
+                .post('auth/token', {
                   email: userInfo.email,
                   password: userInfo.password,
                   grantType: 'token'

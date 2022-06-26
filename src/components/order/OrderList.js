@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-
 import { DataGrid } from '@mui/x-data-grid';
 import { useSelector, useDispatch } from 'react-redux';
 import {mountSellingOrderForModification} from '../../store/sellingOrder'
 import { Link  } from 'react-router-dom';
-
+import useAxios from '../hooks/useAxios'
 const OrderList = ({ ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(5);
@@ -14,7 +12,7 @@ const OrderList = ({ ...rest }) => {
   const [totalOrdersCounts, setTotalOrdersCounts] = useState(0);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-
+  const axiosC = useAxios()
   
   useEffect(() => {
     getOrders();
@@ -23,7 +21,7 @@ const OrderList = ({ ...rest }) => {
   
   const getOrders = () => {
     setLoading(true)
-    axios.get(`selling-orders?page=${page}&take=${limit}`).then((response) => {
+    axiosC.get(`ab/selling-orders?page=${page}&take=${limit}`).then((response) => {
       setOrders(response.data.data);
       setTotalOrdersCounts(response.data['total-result-count']);
       setLoading(false)

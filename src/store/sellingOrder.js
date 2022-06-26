@@ -27,7 +27,7 @@ export const updateOneProductPriceInCurrentOrder = (index, newPrice) => ({type:p
 
 export const createNewSellingOrder = (sellingOrder) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
-      url:'/selling-orders',
+      url:'ab/selling-orders',
       method:'post',
       data:sellingOrder,
       onStart:null,
@@ -44,7 +44,7 @@ export const createNewSellingOrder = (sellingOrder) => (dispatch, getState) => {
 
 export const mountSellingOrderForModification = (sellingOrderId) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
-      url:'/selling-orders/'+sellingOrderId,
+      url:'ab/selling-orders/'+sellingOrderId,
       method:'get',
       onStart:null,
       onError:() => showNotification({type:'error', message:"Error could not mount selling Order", show:true}),
@@ -60,7 +60,7 @@ export const mountSellingOrderForModification = (sellingOrderId) => (dispatch, g
 
 export const updateSellingOrder = (sellingOrder) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
-      url:'/selling-orders',
+      url:'ab/selling-orders',
       method:'put',
       data:sellingOrder,
       onStart:null,
@@ -77,7 +77,7 @@ export const updateSellingOrder = (sellingOrder) => (dispatch, getState) => {
 
 export const getOrderInfo = (orderId) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
-      url:'/selling-orders/'+orderId,
+      url:'ab/selling-orders/'+orderId,
       method:'get',
       callback:(order) => {
         setSellingOrderToLocalStorage(order);
@@ -89,7 +89,7 @@ export const getOrderInfo = (orderId) => (dispatch, getState) => {
 
 export const updateProductPriceForCurrentOrderInDatabase = (sellingOrderLine) => (dispatch, getState) =>{
   dispatch(actions.apiCallBegan({
-    url:'/selling-order/lines',
+    url:'ab/selling-order/lines',
     method:'put',
     data:{sellingOrderLine},
     onStart:null,
@@ -106,7 +106,7 @@ export const updateProductPriceForCurrentOrderInDatabase = (sellingOrderLine) =>
 
 export const deleteProductLineFromSellingOrder = (sellingOrderLine) => (dispatch, getState) => {
   dispatch(actions.apiCallBegan({
-      url:'/selling-order/lines',
+      url:'ab/selling-order/lines',
       method:'delete',
       data:{sellingOrderLine},
       onStart:null,
